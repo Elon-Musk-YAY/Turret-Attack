@@ -26,8 +26,10 @@ public class WaveSpawner : MonoBehaviour
     public float enemyHealth =1;
     public float enemySpeed = 1;
     public float enemyWorth = 1;
-    //public bool loadComplete = false;
-    public int lastMuli = 0;
+    public float healthIncrement = 0.5f;
+    public float speedIncrement = 0.1f;
+    public float worthIncrement = 0.5f;
+    public int lastMultiplierIncrementWave = 0;
 
     public float timeBetweenWaves = 20f;
     private float countdown = 5f;
@@ -38,9 +40,7 @@ public class WaveSpawner : MonoBehaviour
 
     public IEnumerator ShowWave()
     {
-        Debug.LogError(waveIndex);
         PlayerStats.Rounds = (int)Mathf.Clamp((waveIndex + 2) / 2, 1, Mathf.Infinity);
-        Debug.LogWarning(PlayerStats.Rounds);
         if (PlayerStats.Rounds != finalRoundNum)
         {
             waveText.text = "Wave " + PlayerStats.Rounds;
@@ -55,7 +55,6 @@ public class WaveSpawner : MonoBehaviour
     }
     public IEnumerator StartWaveWhenLoaded()
     {
-        Debug.LogWarning("Starting wave soon because game just started.");
         PlayerStats.Rounds += 1;
         enemiesAlive = 0;
         PlayerStats.Rounds = (int)Mathf.Clamp(PlayerStats.Rounds, -1, Mathf.Infinity);
@@ -68,7 +67,6 @@ public class WaveSpawner : MonoBehaviour
         {
             return;
         }
-        Debug.LogWarning("Start wave when loaded");
 
         StartCoroutine(StartWaveWhenLoaded());
     }
@@ -88,8 +86,6 @@ public class WaveSpawner : MonoBehaviour
             enemiesAlive = -1;
 
             StartCoroutine(ShowWave());
-            //Debug.LogWarning(PlayerStats.Rounds);
-            Debug.LogWarning("wtf?");
             PlayerStats.Rounds += 1;
         }
         if (countdown <= 0f && !GameManager.gameOver && PlayerStats.Lives > 0)
@@ -108,20 +104,18 @@ public class WaveSpawner : MonoBehaviour
     IEnumerator SpawnWave()
     {
         PlayerStats.Rounds = (int)Mathf.Clamp(PlayerStats.Rounds, 1, Mathf.Infinity);
-        //Debug.LogError(waveIndex);
         System.Random prng = new((int)Mathf.Clamp(waveIndex/2, 1, Mathf.Infinity));
-        //Debug.LogError(PlayerStats.Rounds);
         enemiesAlive = Mathf.Clamp(waveIndex, 0, 40);
         firstRoundOfGame = false;
-        if (waveIndex/2 % 5 ==0 && waveIndex/2 != 0 && lastMuli != waveIndex/2)
+        if (waveIndex/2 % 5 ==0 && waveIndex/2 != 0 && lastMultiplierIncrementWave != waveIndex/2)
         {
-            lastMuli = waveIndex / 2;
-            enemyHealth += 0.5f * enemyHealth;
-            enemySpeed += .1f * enemySpeed;
-            enemyWorth += enemyWorth * .5f;
-            enemyHealth = Mathf.Clamp(enemyHealth, 1, 80);
+            lastMultiplierIncrementWave = waveIndex / 2;
+            enemyHealth += healthIncrement * enemyHealth;
+            enemySpeed += speedIncrement * enemySpeed;
+            enemyWorth += enemyWorth * worthIncrement;
+            enemyHealth = Mathf.Clamp(enemyHealth, 1, 1200);
             enemySpeed = Mathf.Clamp(enemySpeed, 1, 6);
-            enemyWorth = Mathf.Clamp(enemyWorth, 1, 60);
+            enemyWorth = Mathf.Clamp(enemyWorth, 1, 1500);
         }
         if (waveIndex/2 == finalRoundNum)
         {
@@ -129,7 +123,7 @@ public class WaveSpawner : MonoBehaviour
         }
         for (int i = 0; i < Mathf.Clamp(waveIndex,0,40); i++)
         {
-            if (i+1 == 40)
+            if (i+1 == 40 && waveIndex/2 >= 250)
             {
                 SpawnEnemy(finalBossPrefab);
                 break;

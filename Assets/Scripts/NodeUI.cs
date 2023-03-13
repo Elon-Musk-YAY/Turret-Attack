@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -29,13 +27,13 @@ public class NodeUI : MonoBehaviour
         }
         else
         {
-            upgradePrice.text = "$" + target.GetUpgradeCost();
+            upgradePrice.text = $"${GameManager.ShortenNum(target.GetUpgradeCost())}";
             upgradePrice.enabled = true;
             notEnoughMoneyText.enabled = false;
             cannotBeUpgradedText.enabled = false;
             upgradeButton.interactable = true;
         }
-        sellTxt.text = "$" + target.turret.GetComponent<Turret>().sellPrice;
+        sellTxt.text = $"${GameManager.ShortenNum(target.turret.GetComponent<Turret>().sellPrice)}";
         UI.SetActive(true);
         overlay.SetActive(true);
         overlay.transform.position = target.turret.transform.position;
@@ -115,7 +113,7 @@ public class NodeUI : MonoBehaviour
             }
             else if (target.turret.GetComponent<Turret>().upgradable && !(PlayerStats.Money < target.GetUpgradeCost()))
             {
-                upgradePrice.text = "$" + target.GetUpgradeCost();
+                upgradePrice.text = $"${GameManager.ShortenNum(target.GetUpgradeCost())}";
                 upgradePrice.enabled = true;
                 notEnoughMoneyText.enabled = false;
                 upgradeButton.interactable = true;

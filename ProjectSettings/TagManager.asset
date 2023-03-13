@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Enemy
   - Boundary
+  - Set Money Text
   layers:
   - Default
   - TransparentFX

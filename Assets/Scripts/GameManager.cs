@@ -1,9 +1,6 @@
 using System;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
-
-
+using UnityEngine.EventSystems;
 
 public class GameManager : MonoBehaviour
 {
@@ -11,17 +8,41 @@ public class GameManager : MonoBehaviour
 
     public GameObject gameOverUI;
     public static GameObject nodes;
+    public GameObject gameCamera;
     public GameObject setNodes;
+    public GameObject youWinUI;
     public float sellMulti = 0.5f;
     public static float sellMult;
     public static bool win;
-    // Update is called once per frame
-
-    private void Start()
+    public static bool winState;
+    public static bool inTextBox;
+    public GameObject cheatsMenuText;
+    public static GameManager instance;
+    public static dynamic ShortenNum(float num)
     {
-        gameOver = false;
+        if (num / 1_000_000_000 >= 1)
+        {
+            string output = $"{num / 1_000_000_000:0.00}B";
+            output = output.Replace(".00", "");
+            return output;
+        }
+        else if (num / 1000000 >= 1)
+        {
+            string output = $"{num / 1000000:0.00}M";
+            output = output.Replace(".00","");
+            return output;
+        }
+        else if (num / 1000 >= 1)
+        {
+            string output = $"{num / 1000:0.00}K";
+            output = output.Replace(".00", "");
+            return output;
+        }
+        else
+        {
+            return num;
+        }
     }
-
     public static void LoadExtraData()
     {
         Save save = SaveSystem.save;
@@ -31,15 +52,8 @@ public class GameManager : MonoBehaviour
         };
         PlayerStats.Lives = (int)save.Lives;
         PlayerStats.Money = save.Money;
-        if (save.win != null)
-        {
+        Debug.LogError($"win: {save.win}");
         win = save.win;
-
-        }
-        else
-        {
-            win = false;
-        }
         GraphicsManager.glow = save.glow;
         GraphicsManager.particles = save.particles;
         PlayerStats.Rounds = (int)Mathf.Clamp(save.Rounds, -1, Mathf.Infinity);
@@ -49,11 +63,11 @@ public class GameManager : MonoBehaviour
         WaveSpawner.instance.enemyWorth = save.enemyWorth;
         try
         {
-            WaveSpawner.instance.lastMuli = save.lastMulti;
+            WaveSpawner.instance.lastMultiplierIncrementWave = save.lastMulti;
         }
         catch
         {
-            WaveSpawner.instance.lastMuli = (int)Mathf.Floor((WaveSpawner.instance.waveIndex / 2) / 5) * 5;
+            WaveSpawner.instance.lastMultiplierIncrementWave = (int)Mathf.Floor((WaveSpawner.instance.waveIndex / 2) / 5) * 5;
         }
         if (save.Lives <= 0)
         {
@@ -65,7 +79,7 @@ public class GameManager : MonoBehaviour
             WaveSpawner.instance.enemySpeed = 1;
             WaveSpawner.instance.enemyHealth = 1;
             WaveSpawner.instance.enemyWorth = 1;
-            WaveSpawner.instance.lastMuli = 0;
+            WaveSpawner.instance.lastMultiplierIncrementWave = 0;
         }
         //WaveSpawner.instance.loadComplete = true;
         Debug.LogWarning("Data Load Ready and Done");
@@ -76,6 +90,7 @@ public class GameManager : MonoBehaviour
     {
         nodes = setNodes;
         sellMult = sellMulti;
+        instance = this;
     }
 
 
@@ -140,6 +155,26 @@ public class GameManager : MonoBehaviour
     }
     void Update()
     {
+        if (EventSystem.current.currentSelectedGameObject != null)
+        {
+            if (EventSystem.current.currentSelectedGameObject.CompareTag("Set Money Text"))
+            {
+                inTextBox = true;
+            }
+        }
+        else
+        {
+            inTextBox = false;
+            gameCamera.GetComponent<CameraController>().enabled = true;
+        }
+
+        if (WaveSpawner.instance.waveIndex/2 >= 252)
+        {
+            cheatsMenuText.SetActive(true);
+        } else
+        {
+            cheatsMenuText.SetActive(false);
+        }
         if (gameOver) return;
         if (PlayerStats.Lives <= 0)
         {
@@ -154,9 +189,12 @@ public class GameManager : MonoBehaviour
         gameOver = true;
         gameOverUI.SetActive(true);
     }
-    public static void Win()
+    public void Win()
     {
         win = true;
+        winState = true;
+        youWinUI.SetActive(true);
+
     }
 
     public void Save()

@@ -57,18 +57,7 @@ public class Enemy : MonoBehaviour
     {
         if (isFINALBOSS && !isDead)
         {
-            if (health / 1000000 >= 1)
-            {
-                finalBossHealthText.text = $"{health / 1000000:0.0}M / {startHealth / 1000000:0.0}M";
-            }
-            else if (health / 1000 >= 1)
-            {
-                finalBossHealthText.text = $"{health / 1000:0.0}K / {startHealth / 1000000:0.0}M";
-            }
-            else
-            {
-                finalBossHealthText.text = $"{health} / {startHealth / 1000000:0.0}M";
-            }
+                finalBossHealthText.text = $"{GameManager.ShortenNum(health)} / {GameManager.ShortenNum(startHealth)}";
         }
     }
 
@@ -132,7 +121,13 @@ public class Enemy : MonoBehaviour
     }
     IEnumerator DissolveFinalBoss()
     {
-        GameManager.Win();
+        if (!GameManager.win)
+        {
+            Debug.LogError("why u run?");
+            WaveSpawner.enemiesAlive = 0;
+            WaveSpawner.instance.enabled = false;
+            GameManager.instance.Win();
+        }
         Destroy(gameObject.transform.GetChild(0).gameObject);
         Protected = true;
         GameObject effect = (GameObject)Instantiate(deathEffect, transform.position, Quaternion.identity);

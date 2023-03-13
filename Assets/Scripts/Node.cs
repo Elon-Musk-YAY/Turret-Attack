@@ -144,7 +144,6 @@ public class Node : MonoBehaviour
     private float fireRate;
     private float slowPercent;
 
-    private int bulletDamage;
     private bool useLaser;
     private int sellPrice;
 
@@ -180,7 +179,6 @@ public class Node : MonoBehaviour
         }
 
         comp.upgrades++;
-         //TODO bulletDamage = comp.bulletPrefab.GetComponent<Bullet>().damage;
         range = comp.range;
         range *= 1.1f;
         sellPrice = comp.sellPrice;
@@ -239,8 +237,8 @@ public class Node : MonoBehaviour
         }
         if (comp.useForceField)
         {
-            tComponent.damagePerSecond = Mathf.RoundToInt(comp.damagePerSecond * 1.1f);
-            tComponent.forceFieldLife = Mathf.RoundToInt(comp.forceFieldLife*1.1f);
+            tComponent.damagePerSecond = Mathf.RoundToInt(comp.damagePerSecond * 1.6f);
+            tComponent.forceFieldLife = Mathf.RoundToInt(comp.forceFieldLife*1.2f);
             tComponent.useForceField = true;
             tComponent.animationSpeed = comp.animationSpeed;
             tComponent.slowPercentForce = comp.slowPercentForce;
@@ -251,9 +249,9 @@ public class Node : MonoBehaviour
             GameObject effect = (GameObject)Instantiate(buildManager.upgradeEffect, GetBuildPostion(), Quaternion.Euler(-90,0,0));
             Destroy(effect, 4f);
         }
-        upgradeText.text = "$" + cost;
+        upgradeText.text = "$" + GameManager.ShortenNum(cost);
         LevelAMT.text = comp.upgrades.ToString();
-        sellText.text = "$" +sellPrice;
+        sellText.text = "$" +GameManager.ShortenNum(sellPrice);
 
     }
     private void OnMouseExit()

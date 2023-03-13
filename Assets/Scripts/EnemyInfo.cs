@@ -11,15 +11,15 @@ public class EnemyInfo : MonoBehaviour
     public GameObject ui;
     [Header("Descriptions")]
     [TextArea(3,10)]
-    public string NormalInfo;
+    public string normalInfo;
     [TextArea(3, 10)]
-    public string ToughInfo;
+    public string toughInfo;
     [TextArea(3, 10)]
-    public string FastInfo;
+    public string fastInfo;
     [TextArea(3, 10)]
-    public string MiniBossInfo;
+    public string miniBossInfo;
     [TextArea(3, 10)]
-    public string MegaBossInfo;
+    public string megaBossInfo;
 
     [Header("Info GameObjects")]
     public Text infoTitle;
@@ -35,7 +35,6 @@ public class EnemyInfo : MonoBehaviour
     public Sprite miniBossImage;
     public Sprite megaBossImage;
 
-    private bool hasChangedOriginalStats = false;
     public void OpenEnemyInfoMenu()
     {
         ui.SetActive(true);
@@ -54,14 +53,13 @@ public class EnemyInfo : MonoBehaviour
     }
     private void Update()
     {
-        if (!hasChangedOriginalStats && statsText != null)
+        if (!ui.activeSelf && statsText != null)
         {
             Transform prefab = WaveSpawner.instance.standardEnemyPrefab;
             statsText.text =
-            $"Start Health: {(int)(prefab.GetComponent<Enemy>().startHealth * WaveSpawner.instance.enemyHealth)}\n" +
+            $"Start Health: {GameManager.ShortenNum(prefab.GetComponent<Enemy>().startHealth * WaveSpawner.instance.enemyHealth)}\n" +
             $"Start Speed: {(int)(prefab.GetComponent<Enemy>().startSpeed * WaveSpawner.instance.enemySpeed)}\n" +
-            $"Gain From Death: ${(int)(prefab.GetComponent<Enemy>().worth * WaveSpawner.instance.enemyWorth)}";
-            hasChangedOriginalStats = true;
+            $"Gain From Death: ${GameManager.ShortenNum(prefab.GetComponent<Enemy>().worth * WaveSpawner.instance.enemyWorth):0}";
         }
         boosterText.text = $"Enemy Health Multiplier: {WaveSpawner.instance.enemyHealth:0.00}x\n" +
             $"Enemy Speed Multiplier: {WaveSpawner.instance.enemySpeed:0.00}x\n" +
@@ -73,54 +71,54 @@ public class EnemyInfo : MonoBehaviour
         infoImage.sprite = normalImage;
         Transform prefab = WaveSpawner.instance.standardEnemyPrefab;
         infoTitle.text = "The Normal Enemy";
-        infoText.text = NormalInfo;
+        infoText.text = normalInfo;
         statsText.text =
-            $"Start Health: {(int)(prefab.GetComponent<Enemy>().startHealth * WaveSpawner.instance.enemyHealth)}\n" +
+            $"Start Health: {GameManager.ShortenNum(prefab.GetComponent<Enemy>().startHealth * WaveSpawner.instance.enemyHealth):0}\n" +
             $"Start Speed: {(int)(prefab.GetComponent<Enemy>().startSpeed * WaveSpawner.instance.enemySpeed)}\n" +
-            $"Gain From Death: ${(int)(prefab.GetComponent<Enemy>().worth * WaveSpawner.instance.enemyWorth)}";
+            $"Gain From Death: ${GameManager.ShortenNum(prefab.GetComponent<Enemy>().worth * WaveSpawner.instance.enemyWorth):0}";
     }
     public void OpenToughInfo()
     {
         infoImage.sprite = toughImage;
         Transform prefab = WaveSpawner.instance.toughEnemyPrefab;
         infoTitle.text = "The Tough Enemy";
-        infoText.text = ToughInfo;
+        infoText.text = toughInfo;
         statsText.text =
-            $"Start Health: {(int)(prefab.GetComponent<Enemy>().startHealth * WaveSpawner.instance.enemyHealth)}\n" +
+            $"Start Health: {GameManager.ShortenNum(prefab.GetComponent<Enemy>().startHealth * WaveSpawner.instance.enemyHealth):0}\n" +
             $"Start Speed: {(int)(prefab.GetComponent<Enemy>().startSpeed * WaveSpawner.instance.enemySpeed)}\n" +
-            $"Gain From Death: ${(int)(prefab.GetComponent<Enemy>().worth * WaveSpawner.instance.enemyWorth)}";
+            $"Gain From Death: ${GameManager.ShortenNum(prefab.GetComponent<Enemy>().worth * WaveSpawner.instance.enemyWorth):0}";
     }
     public void OpenFastInfo()
     {
         infoImage.sprite = fastImage;
         Transform prefab = WaveSpawner.instance.fastEnemyPrefab;
         infoTitle.text = "The Speedy Enemy";
-        infoText.text = FastInfo;
+        infoText.text = fastInfo;
         statsText.text =
-            $"Start Health: {(int)(prefab.GetComponent<Enemy>().startHealth * WaveSpawner.instance.enemyHealth)}\n" +
+            $"Start Health: {GameManager.ShortenNum(prefab.GetComponent<Enemy>().startHealth * WaveSpawner.instance.enemyHealth):0}\n" +
             $"Start Speed: {(int)(prefab.GetComponent<Enemy>().startSpeed * WaveSpawner.instance.enemySpeed)}\n" +
-            $"Gain From Death: ${(int)(prefab.GetComponent<Enemy>().worth * WaveSpawner.instance.enemyWorth)}";
+            $"Gain From Death: ${GameManager.ShortenNum(prefab.GetComponent<Enemy>().worth * WaveSpawner.instance.enemyWorth):0}";
     }
     public void OpenMiniBossInfo()
     {
         infoImage.sprite = miniBossImage;
         Transform prefab = WaveSpawner.instance.miniBossPrefab;
         infoTitle.text = "The Mini Boss";
-        infoText.text = MiniBossInfo;
+        infoText.text = miniBossInfo;
         statsText.text =
-            $"Start Health: {(int)(prefab.GetComponent<Enemy>().startHealth * WaveSpawner.instance.enemyHealth)}\n" +
+            $"Start Health: {GameManager.ShortenNum(prefab.GetComponent<Enemy>().startHealth * WaveSpawner.instance.enemyHealth):0}\n" +
             $"Start Speed: {(int)(prefab.GetComponent<Enemy>().startSpeed * WaveSpawner.instance.enemySpeed)}\n" +
-            $"Gain From Death: ${(int)(prefab.GetComponent<Enemy>().worth * WaveSpawner.instance.enemyWorth)}";
+            $"Gain From Death: ${GameManager.ShortenNum(prefab.GetComponent<Enemy>().worth * WaveSpawner.instance.enemyWorth):0}";
     }
     public void OpenMegaBossInfo()
     {
         infoImage.sprite = megaBossImage;
         Transform prefab = WaveSpawner.instance.megaBossPrefab;
         infoTitle.text = "The Mega Boss";
-        infoText.text = MegaBossInfo;
+        infoText.text = megaBossInfo;
         statsText.text =
-            $"Start Health: {(int)(prefab.GetComponent<Enemy>().startHealth * WaveSpawner.instance.enemyHealth)}\n" +
+            $"Start Health: {GameManager.ShortenNum(prefab.GetComponent<Enemy>().startHealth * WaveSpawner.instance.enemyHealth)}\n" +
             $"Start Speed: {(int)(prefab.GetComponent<Enemy>().startSpeed * WaveSpawner.instance.enemySpeed)}\n" +
-            $"Gain From Death: ${(int)(prefab.GetComponent<Enemy>().worth * WaveSpawner.instance.enemyWorth)}";
+            $"Gain From Death: ${GameManager.ShortenNum(prefab.GetComponent<Enemy>().worth * WaveSpawner.instance.enemyWorth):0}";
     }
 }

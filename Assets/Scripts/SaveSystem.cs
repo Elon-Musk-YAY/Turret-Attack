@@ -26,7 +26,7 @@ public static class SaveSystem
         PlayerStats.instance.PrepareSave();
         save.Money = PlayerStats.Money;
         save.Lives = PlayerStats.Lives;
-        save.lastMulti = WaveSpawner.instance.lastMuli;
+        save.lastMulti = WaveSpawner.instance.lastMultiplierIncrementWave;
         if (WaveSpawner.enemiesAlive > 0)
         {
             Debug.LogError("enemies still alive");

@@ -52,7 +52,9 @@ MonoBehaviour:
   blueprintID: 0
   upgrades: 0
   sellPrice: 0
-  isMissle: 1
+  upgradable: 1
+  ammoDmgMultiplier: 1
+  isMissle: 0
   fireRate: 0.02222222
   fireCountdown: 0
   bulletPrefab: {fileID: 3632707236548618267, guid: 16c6b4d7c0741435b88b1ff16be89b97, type: 3}
@@ -69,6 +71,10 @@ MonoBehaviour:
   forceFieldLife: 30
   damagePerSecond: 80
   slowPercentForce: 0.5
+  hardcoreTower: 0
+  laser: {fileID: 0}
+  sellMulti: 3
+  healthMulti: 2
   enemyTag: Enemy
   partToRotate: {fileID: 5512284043864522313}
   turnSpeed: 10

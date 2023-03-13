@@ -14,7 +14,7 @@ public class CameraController : MonoBehaviour
 
     private void Update()
     {
-        if (GameManager.gameOver)
+        if (GameManager.gameOver || GameManager.winState || GameManager.inTextBox)
         {
             this.enabled = false;
             return;

@@ -43,7 +43,7 @@ public class GameOver : MonoBehaviour
         WaveSpawner.enemiesAlive = 0;
         WaveSpawner.instance.enemyWorth = 1;
         GameManager.gameOver = false;
-        WaveSpawner.instance.lastMuli = 0;
+        WaveSpawner.instance.lastMultiplierIncrementWave = 0;
         WaveSpawner.enemiesAlive = -1;
         PlayerStats.instance.StartSave();
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);

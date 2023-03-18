@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using static Unity.Burst.Intrinsics.X86.Avx;
 
 public class NodeUI : MonoBehaviour
 {
@@ -14,6 +15,7 @@ public class NodeUI : MonoBehaviour
     public GameObject rubyButton;
     public Button upgradeButton;
     public GameObject UI;
+    public Text nextUpgradeInfo;
     public GameObject overlay;
     public GameObject skinCanvas;
     public Text statsText;
@@ -77,6 +79,26 @@ public class NodeUI : MonoBehaviour
     {
 
     if (UI.activeSelf) {
+
+            // Max 7 lines of text
+            Turret tComp = target.turret.GetComponent<Turret>();
+            // {1 / (tComp.fireRate * 1.15f):0.0}
+            string nextUpgradeTextString = $"Fire Cooldown: {1 / (tComp.fireRate * 1.15f):0.0}s\n";
+            if (tComp.useLaser) {
+                nextUpgradeTextString = $"Damage Per Second: {(int)Mathf.Round(tComp.damageOverTime * 1.3f)}\n" +
+                    $"Slowing Percentage: {Mathf.Clamp(tComp.slowPercent * 1.2f, 0.1f, 0.9f) * 100:0.0}%\n";
+            } else if (tComp.useForceField) {
+                nextUpgradeTextString += $"Damage Per Second: {Mathf.RoundToInt(tComp.damagePerSecond * 1.6f)}\n" +
+                    $"Slowing Percentage: {tComp.slowPercentForceField * 100:0.0}%\n";
+            } else if (tComp.hardcoreTower)
+            {
+            } else {
+                nextUpgradeTextString += $"Ammo Damage: {tComp.bulletPrefab.GetComponent<Bullet>().damage * (tComp.ammoDmgMultiplier+1)}";
+            }
+            nextUpgradeInfo.text = nextUpgradeTextString;
+
+
+            // Skin checks
             if (WaveSpawner.instance.waveIndex/2 <= 250 || !GameManager.win)
             {
                 diamondButton.SetActive(false);
@@ -103,6 +125,7 @@ public class NodeUI : MonoBehaviour
             {
                 skinCanvas.SetActive(true);
             }
+            // range overlay
             overlay.transform.localScale = new Vector3(target.turret.GetComponent<Turret>().range+1, target.turret.GetComponent<Turret>().range+1, target.turret.GetComponent<Turret>().range+1);
             try
             {
@@ -145,7 +168,7 @@ public class NodeUI : MonoBehaviour
             else if (target.turret.GetComponent<Turret>().useForceField)
             {
                 statsText.text = $"Fire Cooldown: {1 / target.turret.GetComponent<Turret>().fireRate:0.0}s\n" +
-                    $"Slowing Percentage: {target.turret.GetComponent<Turret>().slowPercentForce * 100:0.0}%\n" +
+                    $"Slowing Percentage: {target.turret.GetComponent<Turret>().slowPercentForceField * 100:0.0}%\n" +
                     $"Damage per Second: {target.turret.GetComponent<Turret>().damagePerSecond}";
             }
             else if (target.turret.GetComponent<Turret>().hardcoreTower)

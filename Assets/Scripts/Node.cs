@@ -189,8 +189,7 @@ public class Node : MonoBehaviour
             damageOvertime = comp.damageOverTime;
             slowPercent = comp.slowPercent;
             damageOvertime = (int)Mathf.Round(damageOvertime * 1.3f);
-            slowPercent *= 1.2f;
-            slowPercent = Mathf.Clamp(slowPercent, 0.1f, 0.9f);
+            slowPercent = Mathf.Clamp(slowPercent * 1.2f, 0.1f, 0.9f);
             useLaser = true;
         }
         fireRate = comp.fireRate;
@@ -267,7 +266,7 @@ public class Node : MonoBehaviour
             tComponent.forceFieldLife = Mathf.RoundToInt(comp.forceFieldLife*1.2f);
             tComponent.useForceField = true;
             tComponent.animationSpeed = comp.animationSpeed;
-            tComponent.slowPercentForce = comp.slowPercentForce;
+            tComponent.slowPercentForceField = comp.slowPercentForceField;
             tComponent.blastRadius = Mathf.RoundToInt(comp.blastRadius*1.2f);
         }
         if (GraphicsManager.particles)

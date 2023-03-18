@@ -131,7 +131,7 @@ public class Bullet : MonoBehaviour
                 if (collider.tag == "Enemy")
                 {
                     Damage(collider.transform, Mathf.RoundToInt(turret.damagePerSecond*Time.deltaTime));
-                    collider.gameObject.GetComponent<Enemy>().Slow(turret.slowPercentForce);
+                    collider.gameObject.GetComponent<Enemy>().Slow(turret.slowPercentForceField);
                 }
             }
             yield return new WaitForEndOfFrame();

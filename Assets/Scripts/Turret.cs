@@ -46,7 +46,7 @@ public class Turret : MonoBehaviour
     public float animationSpeed;
     public int forceFieldLife;
     public int damagePerSecond;
-    public float slowPercentForce = 0.5f;
+    public float slowPercentForceField = 0.5f;
 
     [Header("Hardcore Tower Settings")]
     public bool hardcoreTower = false;

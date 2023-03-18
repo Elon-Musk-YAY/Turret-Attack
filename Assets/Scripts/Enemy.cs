@@ -38,10 +38,9 @@ public class Enemy : MonoBehaviour
         InvokeRepeating(nameof(ClearSlowCache), 0.5f, 0.5f);
     }
 
-    IEnumerator ClearSlowCache()
+    private void ClearSlowCache()
     {
         slowPercentages.Clear();
-        yield return null;
     }
 
     IEnumerator RemoveProtection ()

@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
-
+using System.Collections.Generic;
 
 public class Enemy : MonoBehaviour
 {
@@ -18,6 +18,9 @@ public class Enemy : MonoBehaviour
     public int worth = 50;
     public GameObject deathEffect;
 
+    [SerializeField]
+    private List<float> slowPercentages = new();
+
     public bool isBuffed = false;
     [Header("REALLY IMPORTANT")]
     public bool isMegaBoss = false;
@@ -32,6 +35,13 @@ public class Enemy : MonoBehaviour
     {
         speed = startSpeed;
         StartCoroutine(RemoveProtection());
+        InvokeRepeating(nameof(ClearSlowCache), 0.5f, 0.5f);
+    }
+
+    IEnumerator ClearSlowCache()
+    {
+        slowPercentages.Clear();
+        yield return null;
     }
 
     IEnumerator RemoveProtection ()
@@ -61,10 +71,32 @@ public class Enemy : MonoBehaviour
         }
     }
 
+    private float FindMaxSlowness(List<float> list)
+    {
+        if (list.Count == 0)
+        {
+            return 0;
+        }
+        float maxAge = float.MinValue;
+        foreach (float num in list)
+        {
+            if (num > maxAge)
+            {
+                maxAge = num;
+            }
+        }
+        return maxAge;
+    }
+
 
     public void Slow(float amt)
     {
-        speed = startSpeed * (1f - amt);
+        if (Time.timeScale != 0)
+        {
+            slowPercentages.Add(amt);
+            float max = FindMaxSlowness(slowPercentages);
+            speed = startSpeed * (1f - max);
+        }
     }
     void Die()
     {
@@ -93,7 +125,6 @@ public class Enemy : MonoBehaviour
     }
     IEnumerator DissolveMegaBoss ()
     {
-        Debug.LogError("Init fade");
         Destroy(gameObject.transform.GetChild(0).gameObject);
         Protected = true;
         GameObject effect = (GameObject)Instantiate(deathEffect, transform.position, Quaternion.identity);

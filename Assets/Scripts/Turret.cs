@@ -1,4 +1,3 @@
-using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -18,6 +17,7 @@ public class Turret : MonoBehaviour
     public int sellPrice;
     public bool upgradable = true;
     public int ammoDmgMultiplier = 1;
+    public int turretSkinID = 0;
 
     public bool isMissle = false;
 
@@ -37,6 +37,7 @@ public class Turret : MonoBehaviour
     public LineRenderer lineRenderer;
     public ParticleSystem impactEffect;
     public Light impactLight;
+
 
 
     [Header("Use Force Field")]
@@ -65,6 +66,136 @@ public class Turret : MonoBehaviour
     {
         InvokeRepeating("UpdateTarget", 0, 0.5f);
         ammoDmgMultiplier = upgrades + 1;
+       
+    }
+    GameObject CopyComponent(GameObject destination)
+    {
+        Turret t = destination.GetComponent<Turret>();
+        t.upgradeCost = upgradeCost;
+        t.upgraded = upgraded;
+        t.range = range;
+        t.upgrades = upgrades;
+        t.fireRate = fireRate;
+        t.useLaser = useLaser;
+        t.slowPercent = slowPercent;
+        t.damageOverTime = damageOverTime;
+        t.turnSpeed = turnSpeed;
+        t.index = index;
+        t.isMissle = isMissle;
+        t.blueprintID = blueprintID;
+        t.sellPrice = sellPrice;
+        t.upgradable = upgradable;
+        t.sellMulti = sellMulti;
+        t.healthMulti = healthMulti;
+        t.hardcoreTower = hardcoreTower;
+        t.turretSkinID = turretSkinID;
+
+        t.partToRotate = destination.transform.Find("PartToRotate");
+        t.firePoint = destination.transform.Find("PartToRotate").transform.Find("FirePoint");
+        return destination;
+    }
+
+    public Node ApplySkin(int skinID)
+    {
+        Skin newSkin = GameManager.instance.GetSkin(skinID);
+        turretSkinID = skinID;
+        if (isMissle)
+        {
+            GameObject newTurret;
+            if (upgrades >= 1)
+            {
+                newTurret = Instantiate(newSkin.missleLauncherPrefabUpgraded, gameObject.transform.position, Quaternion.identity);
+
+            }
+            else
+            {
+                newTurret = Instantiate(newSkin.missleLauncherPrefab, gameObject.transform.position, Quaternion.identity);
+            }
+            PlayerStats.turrets.Remove(this);
+            CopyComponent(newTurret);
+            Node node = GameManager.nodes.transform.GetChild(index).GetComponent<Node>();
+            node.turret = newTurret;
+            node.turretBlueprint = Shop.instance.GetBlueprintByID(blueprintID);
+            Turret newComp = newTurret.GetComponent<Turret>();
+            PlayerStats.turrets.Add(newComp);
+            newComp.partToRotate = newTurret.transform.Find("PartToRotate");
+            newComp.firePoint = newTurret.transform.Find("PartToRotate").transform.Find("FirePoint");
+            Destroy(gameObject);
+            return node;
+        }
+        else if (useLaser)
+        {
+            GameObject newTurret;
+            if (upgrades >= 1)
+            {
+                newTurret = Instantiate(newSkin.laserBeamerPrefabUpgraded, gameObject.transform.position, Quaternion.identity);
+
+            }
+            else
+            {
+                newTurret = Instantiate(newSkin.laserBeamerPrefab, gameObject.transform.position, Quaternion.identity);
+            }
+            PlayerStats.turrets.Remove(this);
+            CopyComponent(newTurret);
+            Node node = GameManager.nodes.transform.GetChild(index).GetComponent<Node>();
+            node.turret = newTurret;
+            node.turretBlueprint = Shop.instance.GetBlueprintByID(blueprintID);
+            Turret newComp = newTurret.GetComponent<Turret>();
+            PlayerStats.turrets.Add(newComp);
+            newComp.partToRotate = newTurret.transform.Find("PartToRotate");
+            newComp.firePoint = newTurret.transform.Find("PartToRotate").transform.Find("FirePoint");
+            Destroy(gameObject);
+            return node;
+        }
+        else if (useForceField)
+        {
+            GameObject newTurret;
+            if (upgrades >= 1)
+            {
+                newTurret = Instantiate(newSkin.forceFieldLauncherPrefabUpgraded, gameObject.transform.position, Quaternion.identity);
+
+            }
+            else
+            {
+                newTurret = Instantiate(newSkin.forceFieldLauncherPrefab, gameObject.transform.position, Quaternion.identity);
+            }
+            PlayerStats.turrets.Remove(this);
+            CopyComponent(newTurret);
+            Node node = GameManager.nodes.transform.GetChild(index).GetComponent<Node>();
+            node.turret = newTurret;
+            node.turretBlueprint = Shop.instance.GetBlueprintByID(blueprintID);
+            Turret newComp = newTurret.GetComponent<Turret>();
+            PlayerStats.turrets.Add(newComp);
+            newComp.partToRotate = newTurret.transform.Find("PartToRotate");
+            newComp.firePoint = newTurret.transform.Find("PartToRotate").transform.Find("FirePoint");
+            Destroy(gameObject);
+            return node;
+        }
+        else if (!hardcoreTower)
+        {
+            GameObject newTurret;
+            if (upgrades >= 1)
+            {
+                newTurret = Instantiate(newSkin.standardTurretPrefabUpgraded, gameObject.transform.position, Quaternion.identity);
+
+            }
+            else
+            {
+                newTurret = Instantiate(newSkin.standardTurretPrefab, gameObject.transform.position, Quaternion.identity);
+            }
+            PlayerStats.turrets.Remove(this);
+            CopyComponent(newTurret);
+            Node node = GameManager.nodes.transform.GetChild(index).GetComponent<Node>();
+            node.turret = newTurret;
+            node.turretBlueprint = Shop.instance.GetBlueprintByID(blueprintID);
+            Turret newComp = newTurret.GetComponent<Turret>();
+            PlayerStats.turrets.Add(newComp);
+            newComp.partToRotate = newTurret.transform.Find("PartToRotate");
+            newComp.firePoint = newTurret.transform.Find("PartToRotate").transform.Find("FirePoint");
+            Destroy(gameObject);
+            return node;
+        }
+        return null;
     }
 
 

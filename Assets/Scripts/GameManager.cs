@@ -11,11 +11,13 @@ public class GameManager : MonoBehaviour
     public GameObject gameCamera;
     public GameObject setNodes;
     public GameObject youWinUI;
+    public GameObject winFireWorks;
     public float sellMulti = 0.5f;
     public static float sellMult;
     public static bool win;
     public static bool winState;
     public static bool inTextBox;
+    public Skin[] turretSkins;
     public GameObject cheatsMenuText;
     public static GameManager instance;
     public static dynamic ShortenNum(float num)
@@ -42,6 +44,17 @@ public class GameManager : MonoBehaviour
         {
             return num;
         }
+    }
+    public Skin GetSkin(int skinID)
+    {
+        for (int i =0; i< turretSkins.Length; i++)
+        {
+            if (turretSkins[i].skinID == skinID)
+            {
+                return turretSkins[i];
+            }
+        }
+        return null;
     }
     public static void LoadExtraData()
     {
@@ -99,13 +112,56 @@ public class GameManager : MonoBehaviour
 
             Node node = nodes.transform.GetChild(data.nodeIndex).GetComponent<Node>();
             GameObject prefab;
-            if (data.upgraded)
+            if (data.upgraded && data.skinID ==0)
             {
                 prefab = Shop.instance.GetBlueprintByID(data.prefabID).upgradedPrefab;
             }
-            else
+            else if (data.skinID == 0)
             {
                 prefab = Shop.instance.GetBlueprintByID(data.prefabID).prefab;
+            } else
+            {
+                Skin turretSkin = instance.GetSkin(data.skinID);
+                if (data.isMissle)
+                {
+                    if (!data.upgraded)
+                    {
+                        prefab = turretSkin.missleLauncherPrefab;
+                    } else
+                    {
+                        prefab = turretSkin.missleLauncherPrefabUpgraded;
+                    }
+                } else if (data.useLaser)
+                {
+                    if (!data.upgraded)
+                    {
+                        prefab = turretSkin.laserBeamerPrefab;
+                    } else
+                    {
+                        prefab = turretSkin.laserBeamerPrefabUpgraded;
+                    }
+                } else if (data.prefabID == 0)
+                {
+                if (!data.upgraded)
+                {
+                    prefab = turretSkin.standardTurretPrefab;
+                }
+                else
+                {
+                    prefab = turretSkin.standardTurretPrefabUpgraded;
+                }
+            } else
+            {
+                if (!data.upgraded)
+                {
+                    prefab = turretSkin.forceFieldLauncherPrefab;
+                }
+                else
+                {
+                    prefab = turretSkin.forceFieldLauncherPrefabUpgraded;
+                }
+            }
+
             }
             BuildManager.instance.SelectTurretToBuild(Shop.instance.GetBlueprintByID(data.prefabID));
             GameObject gun;
@@ -142,6 +198,7 @@ public class GameManager : MonoBehaviour
         t.isMissle = data.isMissle;
         t.blueprintID = data.prefabID;
         t.sellPrice = data.sellPrice;
+        t.turretSkinID = data.skinID;
         try
         {
             t.upgradable = data.upgradable;
@@ -155,6 +212,11 @@ public class GameManager : MonoBehaviour
     }
     void Update()
     {
+        if (win) {
+            winFireWorks.SetActive(true);
+        } else {
+            winFireWorks.SetActive(false);
+        }
         if (EventSystem.current.currentSelectedGameObject != null)
         {
             if (EventSystem.current.currentSelectedGameObject.CompareTag("Set Money Text"))
@@ -168,7 +230,7 @@ public class GameManager : MonoBehaviour
             gameCamera.GetComponent<CameraController>().enabled = true;
         }
 
-        if (WaveSpawner.instance.waveIndex/2 >= 252)
+        if (WaveSpawner.instance.waveIndex/2 >= 252 && win)
         {
             cheatsMenuText.SetActive(true);
         } else

@@ -9,9 +9,13 @@ public class NodeUI : MonoBehaviour
     public Text cannotBeUpgradedText;
     public Text sellTxt;
     public Text notEnoughMoneyText;
+    public GameObject diamondButton;
+    public GameObject goldButton;
+    public GameObject rubyButton;
     public Button upgradeButton;
     public GameObject UI;
     public GameObject overlay;
+    public GameObject skinCanvas;
     public Text statsText;
     public void SetTarget( Node _target)
     {
@@ -43,10 +47,62 @@ public class NodeUI : MonoBehaviour
 
     }
 
+
+    public void ChangeToDiamond()
+    {
+        Node newTurret = target.turret.GetComponent<Turret>().ApplySkin(1);
+        SetTarget(newTurret);
+
+    }
+    public void ChangeToNone()
+    {
+        Node newTurret = target.turret.GetComponent<Turret>().ApplySkin(0);
+        SetTarget(newTurret);
+
+    }
+    public void ChangeToGold()
+    {
+        Node newTurret = target.turret.GetComponent<Turret>().ApplySkin(2);
+        SetTarget(newTurret);
+
+    }
+    public void ChangeToRuby()
+    {
+        Node newTurret = target.turret.GetComponent<Turret>().ApplySkin(3);
+        SetTarget(newTurret);
+
+    }
+
     private void Update()
     {
 
     if (UI.activeSelf) {
+            if (WaveSpawner.instance.waveIndex/2 <= 250 || !GameManager.win)
+            {
+                diamondButton.SetActive(false);
+            } else
+            {
+                diamondButton.SetActive(true);
+            }
+            if(WaveSpawner.instance.waveIndex / 2 <= 100)
+            {
+                goldButton.SetActive(false);
+            } else
+            {
+                goldButton.SetActive(true);
+            }
+            if (WaveSpawner.instance.waveIndex /2 <= 50) {
+                rubyButton.SetActive(false);
+            } else {
+                rubyButton.SetActive(true);
+            }
+            if (target.turret.GetComponent<Turret>().hardcoreTower)
+            {
+                skinCanvas.SetActive(false);
+            } else
+            {
+                skinCanvas.SetActive(true);
+            }
             overlay.transform.localScale = new Vector3(target.turret.GetComponent<Turret>().range+1, target.turret.GetComponent<Turret>().range+1, target.turret.GetComponent<Turret>().range+1);
             try
             {

@@ -21,6 +21,7 @@ public class TurretData
     public float sellMulti;
     public float healthMulti;
     public bool hardcoreTower;
+    public int skinID;
 
     public TurretData(Turret t)
     {
@@ -42,6 +43,7 @@ public class TurretData
         upgradable = t.upgradable;
         sellMulti = t.sellMulti;
         healthMulti = t.healthMulti;
+        skinID = t.turretSkinID;
     }
 }
 

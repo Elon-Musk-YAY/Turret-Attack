@@ -212,10 +212,36 @@ public class Node : MonoBehaviour
         if (!turret.GetComponent<Turret>().upgraded)
         {
             // get rid of old turret
-            PlayerStats.turrets.Remove(turret.GetComponent<Turret>());
-            Destroy(turret);
-            GameObject _turret = (GameObject)Instantiate(turretBlueprint.upgradedPrefab, GetBuildPostion(isUpgradedLaser: !comp.upgraded && useLaser, isUpgradedMissle: !comp.upgraded && (comp.isMissle || comp.useForceField)), Quaternion.identity);
-            turret = _turret;
+            int oldTurretSkinID = turret.GetComponent<Turret>().turretSkinID;
+            if (oldTurretSkinID == 0)
+            {
+                GameObject _turret = (GameObject)Instantiate(turretBlueprint.upgradedPrefab, GetBuildPostion(isUpgradedLaser: !comp.upgraded && useLaser, isUpgradedMissle: !comp.upgraded && (comp.isMissle || comp.useForceField)), Quaternion.identity);
+                PlayerStats.turrets.Remove(turret.GetComponent<Turret>());
+                Destroy(turret);
+                turret = _turret;
+            } else
+            {
+                Skin skinOBJ = GameManager.instance.GetSkin(oldTurretSkinID);
+                GameObject _turret;
+                if (comp.isMissle) {
+                    _turret = Instantiate(skinOBJ.missleLauncherPrefabUpgraded, GetBuildPostion(isUpgradedLaser: !comp.upgraded && useLaser, isUpgradedMissle: !comp.upgraded && (comp.isMissle || comp.useForceField)), Quaternion.identity);
+                } else if (comp.useLaser)
+                {
+                    _turret = Instantiate(skinOBJ.laserBeamerPrefabUpgraded, GetBuildPostion(isUpgradedLaser: !comp.upgraded && useLaser, isUpgradedMissle: !comp.upgraded && (comp.isMissle || comp.useForceField)), Quaternion.identity);
+                } else if (comp.useForceField)
+                {
+                    _turret = Instantiate(skinOBJ.forceFieldLauncherPrefabUpgraded, GetBuildPostion(isUpgradedLaser: !comp.upgraded && useLaser, isUpgradedMissle: !comp.upgraded && (comp.isMissle || comp.useForceField)), Quaternion.identity);
+                } else if (!comp.hardcoreTower)
+                {
+                    _turret = Instantiate(skinOBJ.standardTurretPrefabUpgraded, GetBuildPostion(isUpgradedLaser: !comp.upgraded && useLaser, isUpgradedMissle: !comp.upgraded && (comp.isMissle || comp.useForceField)), Quaternion.identity);
+                } else
+                {
+                    _turret = (GameObject)Instantiate(skinOBJ.standardTurretPrefabUpgraded, GetBuildPostion(isUpgradedLaser: !comp.upgraded && useLaser, isUpgradedMissle: !comp.upgraded && (comp.isMissle || comp.useForceField)), Quaternion.identity);
+                }
+                PlayerStats.turrets.Remove(turret.GetComponent<Turret>());
+                Destroy(turret);
+                turret = _turret;
+            }
             turret.GetComponent<Turret>().blueprintID = turretBlueprint.id;
             turret.GetComponent<Turret>().index = transform.GetSiblingIndex();
             turret.GetComponent<Turret>().partToRotate.rotation = oldRotation;

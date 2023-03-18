@@ -47,7 +47,7 @@ public class WaveSpawner : MonoBehaviour
         }
         else
         {
-            waveText.text = "FINAL ROUND";
+            waveText.text = "BOSS WAVE";
         }
         waveUI.SetActive(true);
         yield return new WaitForSeconds(5);

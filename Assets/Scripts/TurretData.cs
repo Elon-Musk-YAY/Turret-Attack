@@ -4,20 +4,20 @@ using System.Collections;
 [System.Serializable]
 public class TurretData
 {
-    public int upgradeCost;
+    public long upgradeCost;
     public bool upgraded;
     public float range;
     public int upgrades;
     public float fireRate;
     public bool useLaser;
     public float slowPercent;
-    public int damageOverTime;
+    public long damageOverTime;
     public float turnSpeed;
     public int nodeIndex;
     public bool isMissle;
     public bool upgradable;
     public int prefabID;
-    public int sellPrice;
+    public long sellPrice;
     public float sellMulti;
     public float healthMulti;
     public bool hardcoreTower;

@@ -14,6 +14,8 @@ public class WaveSpawner : MonoBehaviour
     public int finalRoundNum;
     public Transform finalBossPrefab;
     public Text waveText;
+    public GameObject skinBanner;
+    public Text skinBannerText;
 
     public Transform spawnPoint;
 
@@ -30,6 +32,7 @@ public class WaveSpawner : MonoBehaviour
     public float speedIncrement = 0.1f;
     public float worthIncrement = 0.5f;
     public int lastMultiplierIncrementWave = 0;
+    public string lastSkinAlert;
 
     public float timeBetweenWaves = 20f;
     private float countdown = 5f;
@@ -41,6 +44,7 @@ public class WaveSpawner : MonoBehaviour
     public IEnumerator ShowWave()
     {
         PlayerStats.Rounds = (int)Mathf.Clamp((waveIndex + 2) / 2, 1, Mathf.Infinity);
+        StartCoroutine(SkinAlert());
         if (PlayerStats.Rounds != finalRoundNum)
         {
             waveText.text = "Wave " + PlayerStats.Rounds;
@@ -52,6 +56,28 @@ public class WaveSpawner : MonoBehaviour
         waveUI.SetActive(true);
         yield return new WaitForSeconds(5);
         waveUI.SetActive(false);
+    }
+    public IEnumerator SkinAlert() {
+        if ((waveIndex / 2) - 1 <= 50 && lastSkinAlert != "Ruby" && waveIndex / 2 == 50)
+        {
+            skinBanner.SetActive(true);
+            lastSkinAlert = "Ruby";
+            skinBannerText.text = "You now have the <b><color=\"red\">Ruby</color></b> skin!";
+            yield return new WaitForSeconds(5f);
+            skinBanner.SetActive(false);
+        }
+        else if ((waveIndex / 2) - 1 <= 100 && lastSkinAlert != "Gold" && waveIndex/2 == 100)
+        {
+            skinBanner.SetActive(true);
+            lastSkinAlert = "Gold";
+            skinBannerText.text = "You now have the <b><color=\"yellow\">Gold</color></b> skin!";
+            yield return new WaitForSeconds(5f);
+            skinBanner.SetActive(false);
+        }
+        else
+        {
+            yield return null;
+        }
     }
     public IEnumerator StartWaveWhenLoaded()
     {

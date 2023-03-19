@@ -26,7 +26,7 @@ public class GraphicsManager : MonoBehaviour
 
     private void Start()
     {
-        GameSettings settings;
+        GameSettings fileSettings;
         BinaryFormatter formatter = new();
         if (File.Exists(SaveSystem.sPath))
         {
@@ -40,9 +40,10 @@ public class GraphicsManager : MonoBehaviour
                     return;
                 }
                 object data = formatter.Deserialize(stream);
-                settings = data as GameSettings;
-                glow = settings.glow;
-                particles = settings.particles;
+                fileSettings = data as GameSettings;
+                glow = fileSettings.glow;
+                particles = fileSettings.particles;
+                Debug.LogError(particles);
             }
             catch (System.Exception e)
             {

@@ -41,6 +41,7 @@ public static class SaveSystem
         save.enemyHealth = WaveSpawner.instance.enemyHealth;
         save.enemySpeed = WaveSpawner.instance.enemySpeed;
         save.enemyWorth = WaveSpawner.instance.enemyWorth;
+        save.lastSkinAlert = WaveSpawner.instance.lastSkinAlert;
         save.glow = GraphicsManager.glow;
         save.particles = GraphicsManager.particles;
         save.win = GameManager.win;

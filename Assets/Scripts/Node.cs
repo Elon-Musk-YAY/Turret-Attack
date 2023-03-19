@@ -69,7 +69,7 @@ public class Node : MonoBehaviour
     }
 
 
-        public int GetUpgradeCost()
+        public long GetUpgradeCost()
         {
             Turret turretComp = turret.GetComponent<Turret>();
             return turretComp.upgradeCost;
@@ -138,14 +138,14 @@ public class Node : MonoBehaviour
 
     }
 
-    private int cost;
+    private long cost;
     private float range;
-    private int damageOvertime;
+    private long damageOvertime;
     private float fireRate;
     private float slowPercent;
 
     private bool useLaser;
-    private int sellPrice;
+    private long sellPrice;
 
     public void SellTurret()
     {
@@ -188,7 +188,7 @@ public class Node : MonoBehaviour
             useLaser = true;
             damageOvertime = comp.damageOverTime;
             slowPercent = comp.slowPercent;
-            damageOvertime = (int)Mathf.Round(damageOvertime * 1.3f);
+            damageOvertime = (long)(damageOvertime * 1.5d);
             slowPercent = Mathf.Clamp(slowPercent * 1.2f, 0.1f, 0.9f);
             useLaser = true;
         }
@@ -201,11 +201,11 @@ public class Node : MonoBehaviour
         if (!turretIsUpgraded)
         {
             PlayerStats.Money -= turretBlueprint.upgradeCost;
-            sellPrice = Mathf.RoundToInt(sellPrice + (turretBlueprint.upgradeCost * GameManager.sellMult));
+            sellPrice = (long)System.Math.Round(sellPrice + (turretBlueprint.upgradeCost * GameManager.sellMult));
         } else
         {
             PlayerStats.Money -= cost;
-            sellPrice = Mathf.RoundToInt(sellPrice + (cost * GameManager.sellMult));
+            sellPrice = (long)System.Math.Round(sellPrice + (cost * GameManager.sellMult));
         }
 
         if (!turret.GetComponent<Turret>().upgraded)
@@ -248,13 +248,13 @@ public class Node : MonoBehaviour
             PlayerStats.turrets.Add(turret.GetComponent<Turret>());
         }
         Turret tComponent = turret.GetComponent<Turret>();
-        cost = (int)Mathf.Round(cost * 1.4f);
+        cost = (long)System.Math.Round(cost * 1.4f);
         tComponent.upgraded = true;
         tComponent.upgradeCost = cost;
         tComponent.range = range;
         tComponent.fireRate = fireRate;
         tComponent.sellPrice = sellPrice;
-        tComponent.ammoDmgMultiplier++;
+        tComponent.ammoDmgMultiplier *= 1.3;
         if (useLaser)
         {
             tComponent.damageOverTime = damageOvertime;
@@ -262,21 +262,23 @@ public class Node : MonoBehaviour
         }
         if (comp.useForceField)
         {
-            tComponent.damagePerSecond = Mathf.RoundToInt(comp.damagePerSecond * 1.6f);
+            tComponent.damagePerSecond = (long)(comp.damagePerSecond * 1.4f);
             tComponent.forceFieldLife = Mathf.RoundToInt(comp.forceFieldLife*1.2f);
+            tComponent.forceFieldLife = Mathf.Clamp(tComponent.forceFieldLife, 1, 30);
             tComponent.useForceField = true;
             tComponent.animationSpeed = comp.animationSpeed;
             tComponent.slowPercentForceField = comp.slowPercentForceField;
             tComponent.blastRadius = Mathf.RoundToInt(comp.blastRadius*1.2f);
+            tComponent.blastRadius = Mathf.Clamp(tComponent.blastRadius, 1, 30);
         }
         if (GraphicsManager.particles)
         {
             GameObject effect = (GameObject)Instantiate(buildManager.upgradeEffect, GetBuildPostion(), Quaternion.Euler(-90,0,0));
             Destroy(effect, 4f);
         }
-        upgradeText.text = "$" + GameManager.ShortenNum(cost);
+        upgradeText.text = "$" + GameManager.ShortenNumL(cost);
         LevelAMT.text = comp.upgrades.ToString();
-        sellText.text = "$" +GameManager.ShortenNum(sellPrice);
+        sellText.text = "$" +GameManager.ShortenNumL(sellPrice);
 
     }
     private void OnMouseExit()

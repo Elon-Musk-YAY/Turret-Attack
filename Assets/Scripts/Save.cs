@@ -4,7 +4,7 @@ using System.Collections.Generic;
 [System.Serializable]
 public class Save
 {
-	public int Money { get; set; }
+	public long Money { get; set; }
 	public int Lives { get; set; }
 	public bool win { get; set; }
 	public int Rounds { get; set; }
@@ -15,6 +15,7 @@ public class Save
 	public bool glow { get; set; }
 	public bool particles { get; set; }
 	public int lastMulti { get; set; }
+	public string lastSkinAlert { get; set; }
 
 
 }

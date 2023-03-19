@@ -33,13 +33,13 @@ public class NodeUI : MonoBehaviour
         }
         else
         {
-            upgradePrice.text = $"${GameManager.ShortenNum(target.GetUpgradeCost())}";
+            upgradePrice.text = $"${GameManager.ShortenNumL(target.GetUpgradeCost())}";
             upgradePrice.enabled = true;
             notEnoughMoneyText.enabled = false;
             cannotBeUpgradedText.enabled = false;
             upgradeButton.interactable = true;
         }
-        sellTxt.text = $"${GameManager.ShortenNum(target.turret.GetComponent<Turret>().sellPrice)}";
+        sellTxt.text = $"${GameManager.ShortenNumL(target.turret.GetComponent<Turret>().sellPrice)}";
         UI.SetActive(true);
         overlay.SetActive(true);
         overlay.transform.position = target.turret.transform.position;
@@ -85,20 +85,27 @@ public class NodeUI : MonoBehaviour
             // {1 / (tComp.fireRate * 1.15f):0.0}
             string nextUpgradeTextString = $"Fire Cooldown: {1 / (tComp.fireRate * 1.15f):0.0}s\n";
             if (tComp.useLaser) {
-                nextUpgradeTextString = $"Damage Per Second: {(int)Mathf.Round(tComp.damageOverTime * 1.3f)}\n" +
-                    $"Slowing Percentage: {Mathf.Clamp(tComp.slowPercent * 1.2f, 0.1f, 0.9f) * 100:0.0}%\n";
+                nextUpgradeTextString = $"Slowing Percentage: {Mathf.Clamp(tComp.slowPercent * 1.2f, 0.1f, 0.9f) * 100:0.0}%\n" +
+                    $"Damage Per Second: {GameManager.ShortenNumL((long)(tComp.damageOverTime * 1.5d))}\n";
             } else if (tComp.useForceField) {
-                nextUpgradeTextString += $"Damage Per Second: {Mathf.RoundToInt(tComp.damagePerSecond * 1.6f)}\n" +
-                    $"Slowing Percentage: {tComp.slowPercentForceField * 100:0.0}%\n";
+                nextUpgradeTextString += $"Slowing Percentage: {tComp.slowPercentForceField * 100:0.0}%\n" +
+                    $"Damage Per Second: {GameManager.ShortenNumL((long)(tComp.damagePerSecond * 1.4d))}\n";
             } else if (tComp.hardcoreTower)
             {
             } else {
-                nextUpgradeTextString += $"Ammo Damage: {tComp.bulletPrefab.GetComponent<Bullet>().damage * (tComp.ammoDmgMultiplier+1)}";
+                if (!tComp.upgraded) {
+                    Turret newT = Shop.instance.GetBlueprintByID(tComp.blueprintID).upgradedPrefab.GetComponent<Turret>();
+                    nextUpgradeTextString += $"Ammo Damage: {GameManager.ShortenNumL((long)(newT.bulletPrefab.GetComponent<Bullet>().damage * (tComp.ammoDmgMultiplier * 1.3)))}";
+                }
+                else {
+
+                nextUpgradeTextString += $"Ammo Damage: {GameManager.ShortenNumL((long)(tComp.bulletPrefab.GetComponent<Bullet>().damage * (tComp.ammoDmgMultiplier* 1.3)))}";
+                }
             }
             nextUpgradeInfo.text = nextUpgradeTextString;
 
 
-            // Skin checks
+            // Skin checks WHEN YOU ADD NEW SKINS MAKE SURE TO ADD THE ALERT in WAVESPAWNER;
             if (WaveSpawner.instance.waveIndex/2 <= 250 || !GameManager.win)
             {
                 diamondButton.SetActive(false);
@@ -163,13 +170,13 @@ public class NodeUI : MonoBehaviour
             {
                 statsText.text = $"Fire Cooldown: None\n" +
                     $"Slowing Percentage: {target.turret.GetComponent<Turret>().slowPercent * 100:0.0}%\n" +
-                    $"Damage per Second: {target.turret.GetComponent<Turret>().damageOverTime}";
+                    $"Damage per Second: {GameManager.ShortenNumL(target.turret.GetComponent<Turret>().damageOverTime)}";
             }
             else if (target.turret.GetComponent<Turret>().useForceField)
             {
                 statsText.text = $"Fire Cooldown: {1 / target.turret.GetComponent<Turret>().fireRate:0.0}s\n" +
                     $"Slowing Percentage: {target.turret.GetComponent<Turret>().slowPercentForceField * 100:0.0}%\n" +
-                    $"Damage per Second: {target.turret.GetComponent<Turret>().damagePerSecond}";
+                    $"Damage per Second: {GameManager.ShortenNumL(target.turret.GetComponent<Turret>().damagePerSecond)}";
             }
             else if (target.turret.GetComponent<Turret>().hardcoreTower)
             {
@@ -180,7 +187,7 @@ public class NodeUI : MonoBehaviour
             else
             {
                 statsText.text = $"Fire Cooldown: {1 / target.turret.GetComponent<Turret>().fireRate:0.0}s\n"+
-                    $"Ammo Damage: {target.turret.GetComponent<Turret>().bulletPrefab.GetComponent<Bullet>().damage * target.turret.GetComponent<Turret>().ammoDmgMultiplier}";
+                    $"Ammo Damage: {GameManager.ShortenNumL((long)(target.turret.GetComponent<Turret>().bulletPrefab.GetComponent<Bullet>().damage * target.turret.GetComponent<Turret>().ammoDmgMultiplier))}";
             }
 
 
@@ -192,7 +199,7 @@ public class NodeUI : MonoBehaviour
             }
             else if (target.turret.GetComponent<Turret>().upgradable && !(PlayerStats.Money < target.GetUpgradeCost()))
             {
-                upgradePrice.text = $"${GameManager.ShortenNum(target.GetUpgradeCost())}";
+                upgradePrice.text = $"${GameManager.ShortenNumL(target.GetUpgradeCost())}";
                 upgradePrice.enabled = true;
                 notEnoughMoneyText.enabled = false;
                 upgradeButton.interactable = true;

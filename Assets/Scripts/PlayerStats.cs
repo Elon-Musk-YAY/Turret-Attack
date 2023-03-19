@@ -26,8 +26,7 @@ public class PlayerStats : MonoBehaviour
         InvokeRepeating(nameof(StartSave), 30f, 30f);
 
     }
-
-    public static int Money;
+    public static long Money;
     public int startMoney = 400;
     public static int Lives;
     public int startLives = 20;

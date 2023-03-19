@@ -5,7 +5,7 @@ public class Turret : MonoBehaviour
 {
     private Transform target;
 
-    public int upgradeCost = 0;
+    public long upgradeCost = 0;
     [HideInInspector]
     public bool upgraded = false;
 
@@ -14,9 +14,9 @@ public class Turret : MonoBehaviour
     private Enemy enemy;
     public int blueprintID = 0;
     public int upgrades = 0;
-    public int sellPrice;
+    public long sellPrice;
     public bool upgradable = true;
-    public int ammoDmgMultiplier = 1;
+    public double ammoDmgMultiplier = 1;
     public int turretSkinID = 0;
 
     public bool isMissle = false;
@@ -32,7 +32,7 @@ public class Turret : MonoBehaviour
     [Header("Use Laser")]
     public bool useLaser = false;
     public float slowPercent = .5f;
-    public int damageOverTime = 30;
+    public long damageOverTime = 30;
 
     public LineRenderer lineRenderer;
     public ParticleSystem impactEffect;
@@ -45,7 +45,7 @@ public class Turret : MonoBehaviour
     public float blastRadius;
     public float animationSpeed;
     public int forceFieldLife;
-    public int damagePerSecond;
+    public long damagePerSecond;
     public float slowPercentForceField = 0.5f;
 
     [Header("Hardcore Tower Settings")]
@@ -65,7 +65,7 @@ public class Turret : MonoBehaviour
     void Start()
     {
         InvokeRepeating("UpdateTarget", 0, 0.5f);
-        ammoDmgMultiplier = upgrades + 1;
+        ammoDmgMultiplier = System.Math.Pow(1.3d,upgrades);
        
     }
     GameObject CopyComponent(GameObject destination)
@@ -341,7 +341,7 @@ public class Turret : MonoBehaviour
         // get script
         Bullet bullet = bulletGO.GetComponent<Bullet>();
         bullet.setParent(this);
-        bullet.damage *= ammoDmgMultiplier;
+        bullet.damage = (long)(bullet.damage * ammoDmgMultiplier);
 
         if (bullet != null)
         {

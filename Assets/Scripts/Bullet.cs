@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using UnityEngine;
+using static UnityEngine.EventSystems.EventTrigger;
+using UnityEngine.SocialPlatforms;
 
 public class Bullet : MonoBehaviour
 {
@@ -15,7 +17,7 @@ public class Bullet : MonoBehaviour
     private bool hasUsedEffect = false;
 
 
-    public int damage = 50;
+    public long damage = 50;
 
 
     public void Seek(Transform _target)
@@ -36,9 +38,29 @@ public class Bullet : MonoBehaviour
         {
             if (!hasSpawnedForceField)
             {
-                Destroy(gameObject);
+                GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
+                float shortestDistance = Mathf.Infinity;
+                GameObject nearestEnemy = null;
+                foreach (GameObject enemy in enemies)
+                {
+                    float distanceToEnemy = Vector3.Distance(transform.position, enemy.transform.position);
+                    if (distanceToEnemy < shortestDistance && enemy.GetComponent<Enemy>().Protected == false)
+                    {
+                        shortestDistance = distanceToEnemy;
+                        nearestEnemy = enemy;
+                    }
+                }
+                if (nearestEnemy != null && shortestDistance <= turret.range && !turret.hardcoreTower)
+                {
+                    target = nearestEnemy.transform;
+                    Seek(nearestEnemy.transform);
+                }
+                else
+                {
+                    Destroy(gameObject);
+                    turret.fireCountdown = (1f / turret.fireRate) / 2;
+                }
             }
-            turret.fireCountdown = (1f / turret.fireRate) / 2;
             return;
         }
 
@@ -185,7 +207,7 @@ public class Bullet : MonoBehaviour
     }
 
 
-    void Damage(Transform enemy, int damage)
+    void Damage(Transform enemy, long damage)
     {
         Enemy e = enemy.GetComponent<Enemy>();
         if (e != null)

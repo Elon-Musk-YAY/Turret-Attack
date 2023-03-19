@@ -20,7 +20,7 @@ public class GameManager : MonoBehaviour
     public Skin[] turretSkins;
     public GameObject cheatsMenuText;
     public static GameManager instance;
-    public static dynamic ShortenNum(float num)
+    public static string ShortenNum(float num)
     {
         if (num / 1_000_000_000 >= 1)
         {
@@ -42,7 +42,51 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            return num;
+            return num.ToString();
+        }
+    }
+    public static string ShortenNumL(long num)
+    {
+        if (num / 1_000_000_000_000_000_000 >= 1)
+        {
+            string output = $"{num / 1_000_000_000_000_000_000d:0.00}QI";
+            output = output.Replace(".00", "");
+            return output;
+        }
+        else if (num / 1_000_000_000_000_000 >= 1)
+        {
+            string output = $"{num / 1_000_000_000_000_000d:0.00}QA";
+            output = output.Replace(".00", "");
+            return output;
+        }
+        else if (num / 1_000_000_000_000 >= 1)
+        {
+            string output = $"{num / 1_000_000_000_000d:0.00}T";
+            output = output.Replace(".00", "");
+            return output;
+        }
+        else if (num / 1_000_000_000 >= 1)
+        {
+            string output = $"{num / 1_000_000_000d:0.00}B";
+
+            output = output.Replace(".00", "");
+            return output;
+        }
+        else if (num / 1_000_000 >= 1)
+        {
+            string output = $"{num / 1_000_000d:0.00}M";
+            output = output.Replace(".00", "");
+            return output;
+        }
+        else if (num / 1_000 >= 1)
+        {
+            string output = $"{num / 1_000d:0.00}K";
+            output = output.Replace(".00", "");
+            return output;
+        }
+        else
+        {
+            return num.ToString();
         }
     }
     public Skin GetSkin(int skinID)
@@ -67,13 +111,12 @@ public class GameManager : MonoBehaviour
         PlayerStats.Money = save.Money;
         Debug.LogError($"win: {save.win}");
         win = save.win;
-        GraphicsManager.glow = save.glow;
-        GraphicsManager.particles = save.particles;
         PlayerStats.Rounds = (int)Mathf.Clamp(save.Rounds, -1, Mathf.Infinity);
         WaveSpawner.instance.enemySpeed = save.enemySpeed;
         WaveSpawner.instance.enemyHealth = save.enemyHealth;
         WaveSpawner.instance.waveIndex = save.enemiesPerRound;
         WaveSpawner.instance.enemyWorth = save.enemyWorth;
+        WaveSpawner.instance.lastSkinAlert = save.lastSkinAlert;
         try
         {
             WaveSpawner.instance.lastMultiplierIncrementWave = save.lastMulti;
@@ -230,7 +273,7 @@ public class GameManager : MonoBehaviour
             gameCamera.GetComponent<CameraController>().enabled = true;
         }
 
-        if (WaveSpawner.instance.waveIndex/2 >= 252 && win)
+        if (WaveSpawner.instance.waveIndex/2 >= 250 && win)
         {
             cheatsMenuText.SetActive(true);
         } else

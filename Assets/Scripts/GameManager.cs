@@ -89,6 +89,52 @@ public class GameManager : MonoBehaviour
             return num.ToString();
         }
     }
+
+
+    public static string ShortenNumD(double num)
+    {
+        if (num / 1_000_000_000_000_000_000 >= 1)
+        {
+            string output = $"{num / 1_000_000_000_000_000_000d:0.00}QI";
+            output = output.Replace(".00", "");
+            return output;
+        }
+        else if (num / 1_000_000_000_000_000 >= 1)
+        {
+            string output = $"{num / 1_000_000_000_000_000d:0.00}QA";
+            output = output.Replace(".00", "");
+            return output;
+        }
+        else if (num / 1_000_000_000_000 >= 1)
+        {
+            string output = $"{num / 1_000_000_000_000d:0.00}T";
+            output = output.Replace(".00", "");
+            return output;
+        }
+        else if (num / 1_000_000_000 >= 1)
+        {
+            string output = $"{num / 1_000_000_000d:0.00}B";
+
+            output = output.Replace(".00", "");
+            return output;
+        }
+        else if (num / 1_000_000 >= 1)
+        {
+            string output = $"{num / 1_000_000d:0.00}M";
+            output = output.Replace(".00", "");
+            return output;
+        }
+        else if (num / 1_000 >= 1)
+        {
+            string output = $"{num / 1_000d:0.00}K";
+            output = output.Replace(".00", "");
+            return output;
+        }
+        else
+        {
+            return num.ToString();
+        }
+    }
     public Skin GetSkin(int skinID)
     {
         for (int i =0; i< turretSkins.Length; i++)
@@ -248,6 +294,12 @@ public class GameManager : MonoBehaviour
             t.sellMulti = data.sellMulti;
             t.healthMulti = data.healthMulti;
             t.hardcoreTower = data.hardcoreTower;
+            t.slowPercentForceField = data.slowPercentForceField;
+            t.forceFieldLife = data.forceFieldLife;
+            t.damagePerSecond = data.damagePerSecond;
+            t.blastRadius = data.blastRadius;
+            t.useForceField = data.useForceField;
+
         } catch (Exception e) 
         {
             print(e.StackTrace);

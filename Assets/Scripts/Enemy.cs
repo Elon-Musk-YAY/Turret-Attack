@@ -8,13 +8,13 @@ public class Enemy : MonoBehaviour
     public float startSpeed = 10f;
     [HideInInspector]
     public float speed;
-    public int startHealth = 100;
+    public long startHealth = 100;
     [HideInInspector]
     public bool Protected = true;
 
     public int startY = 2;
     [HideInInspector]
-    public float health = 100;
+    public double health = 100;
     public int worth = 50;
     public GameObject deathEffect;
 
@@ -49,7 +49,7 @@ public class Enemy : MonoBehaviour
         Protected = false;
     }
 
-    public void TakeDamage(float amount)
+    public void TakeDamage(double amount)
     {
         if (Protected)
         {
@@ -60,13 +60,13 @@ public class Enemy : MonoBehaviour
         {
             Die();
         }
-        healthBar.fillAmount = health/startHealth;
+        healthBar.fillAmount = (float)health/startHealth;
     }
     private void Update()
     {
         if (isFINALBOSS && !isDead)
         {
-                finalBossHealthText.text = $"{GameManager.ShortenNum(health)} / {GameManager.ShortenNum(startHealth)}";
+                finalBossHealthText.text = $"{GameManager.ShortenNumD(health)} / {GameManager.ShortenNumL(startHealth)}";
         }
     }
 

@@ -17,6 +17,9 @@ public class GraphicsManager : MonoBehaviour
         BinaryFormatter formatter = new();
         settings.glow = glow;
         settings.particles = particles;
+        if (!File.Exists(SaveSystem.sPath)) {
+            return;
+        }
         FileStream settingsStream = new FileStream(SaveSystem.sPath, FileMode.Create);
         formatter.Serialize(settingsStream,settings);
         settingsStream.Close();

@@ -55,6 +55,9 @@ public class EnemyInfo : MonoBehaviour
     {
         if (!ui.activeSelf && statsText != null)
         {
+            infoText.text = "The Normal Enemy";
+            infoImage.sprite = normalImage;
+            infoText.text = normalInfo;
             Transform prefab = WaveSpawner.instance.standardEnemyPrefab;
             statsText.text =
             $"Start Health: {GameManager.ShortenNum(Mathf.RoundToInt(prefab.GetComponent<Enemy>().startHealth * WaveSpawner.instance.enemyHealth))}\n" +

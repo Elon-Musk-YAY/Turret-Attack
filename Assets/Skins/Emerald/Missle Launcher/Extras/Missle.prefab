@@ -46,7 +46,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7fe8873977f484b8ebecae830ef720a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  impactEffect: {fileID: 471931622059112010, guid: 07d4cb3ea8120461cbd09013a6c138d2, type: 3}
+  impactEffect: {fileID: 471931622059112010, guid: 70b745f5393464f1c9dc8b1b2116a201, type: 3}
   speed: 20
   explosionRadius: 8
   forceFieldPrefab: {fileID: 0}
@@ -4812,7 +4812,7 @@ ParticleSystemRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: b81e096dd32814294aefc889674bccec, type: 2}
+  - {fileID: 2100000, guid: 0859e8d59045e47faafc95984651be9f, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -4924,7 +4924,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 7ba68d72010ee4cda9adde49f716d1ef, type: 2}
+  - {fileID: 2100000, guid: 467f78c8f607146be93ad407430c04f3, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

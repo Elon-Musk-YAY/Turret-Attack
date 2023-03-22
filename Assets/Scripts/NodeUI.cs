@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEngine.UI;
-using static Unity.Burst.Intrinsics.X86.Avx;
 
 public class NodeUI : MonoBehaviour
 {
@@ -10,9 +9,12 @@ public class NodeUI : MonoBehaviour
     public Text cannotBeUpgradedText;
     public Text sellTxt;
     public Text notEnoughMoneyText;
+    public Text changeAllToText;
     public GameObject diamondButton;
     public GameObject goldButton;
     public GameObject rubyButton;
+    public GameObject emeraldButton;
+    public GameObject holoButton;
     public Button upgradeButton;
     public GameObject UI;
     public Text nextUpgradeInfo;
@@ -74,15 +76,57 @@ public class NodeUI : MonoBehaviour
         SetTarget(newTurret);
 
     }
+    public void ChangeToEmerald()
+    {
+        Node newTurret = target.turret.GetComponent<Turret>().ApplySkin(4);
+        SetTarget(newTurret);
+
+    }
+    public void ChangeToHolo()
+    {
+        Node newTurret = target.turret.GetComponent<Turret>().ApplySkin(5);
+        SetTarget(newTurret);
+
+    }
+
+    public void ChangeAllToThis() {
+        int currentTurretBlueprintID = target.turret.GetComponent<Turret>().blueprintID;
+        int currentSkinID = target.turret.GetComponent<Turret>().turretSkinID;
+        Turret[] turrets = FindObjectsOfType<Turret>();
+        foreach (Turret t in turrets) {
+            if (t.index == target.turret.GetComponent<Turret>().index) {
+                continue;
+            }
+            if (t.blueprintID == currentTurretBlueprintID) {
+                t.ApplySkin(currentSkinID);
+            }
+        }
+    }
 
     private void Update()
     {
 
     if (UI.activeSelf) {
-
             // Max 7 lines of text
             Turret tComp = target.turret.GetComponent<Turret>();
-            // {1 / (tComp.fireRate * 1.15f):0.0}
+            string add;
+            if (tComp.blueprintID == 0) {
+                add = "STANDARD TURRETS";
+            } else if (tComp.blueprintID == 1) {
+                add = "MISSLE LAUNCHERS";
+            } else if (tComp.blueprintID == 2) {
+                add = "LASER BEAMERS";
+            } else if (tComp.blueprintID == 3) {
+                add = "FREEZE AURA LAUNCHERS";
+            } else {
+                // cannot be applied
+                add = "cba";
+            }
+            if (add != "cba") {
+                changeAllToText.text = $"CHANGE ALL {add} TO CURRENT SKIN";
+            } else {
+                changeAllToText.text = "wtf how u find this";
+            }
             string nextUpgradeTextString = $"Fire Cooldown: {1 / (tComp.fireRate * 1.15f):0.0}s\n";
             if (tComp.useLaser) {
                 nextUpgradeTextString = $"Slowing Percentage: {Mathf.Clamp(tComp.slowPercent * 1.2f, 0.1f, 0.9f) * 100:0.0}%\n" +
@@ -113,17 +157,33 @@ public class NodeUI : MonoBehaviour
             {
                 diamondButton.SetActive(true);
             }
-            if(WaveSpawner.instance.waveIndex / 2 <= 100)
+            if(WaveSpawner.instance.waveIndex / 2 < 100)
             {
                 goldButton.SetActive(false);
             } else
             {
                 goldButton.SetActive(true);
             }
-            if (WaveSpawner.instance.waveIndex /2 <= 50) {
+            if (WaveSpawner.instance.waveIndex /2 < 50) {
                 rubyButton.SetActive(false);
             } else {
                 rubyButton.SetActive(true);
+            }
+            if (WaveSpawner.instance.waveIndex / 2 < 200)
+            {
+                emeraldButton.SetActive(false);
+            }
+            else
+            {
+                emeraldButton.SetActive(true);
+            }
+            if (WaveSpawner.instance.waveIndex / 2 < 300)
+            {
+                holoButton.SetActive(false);
+            }
+            else
+            {
+                holoButton.SetActive(true);
             }
             if (target.turret.GetComponent<Turret>().hardcoreTower)
             {

@@ -23,6 +23,12 @@ public class TurretData
     public bool hardcoreTower;
     public int skinID;
 
+    public long damagePerSecond;
+    public int forceFieldLife;
+    public float blastRadius;
+    public bool useForceField;
+    public float slowPercentForceField;
+
     public TurretData(Turret t)
     {
         upgradeCost = t.upgradeCost;
@@ -44,6 +50,11 @@ public class TurretData
         sellMulti = t.sellMulti;
         healthMulti = t.healthMulti;
         skinID = t.turretSkinID;
+        damagePerSecond = t.damagePerSecond;
+        forceFieldLife = t.forceFieldLife;
+        blastRadius = t.blastRadius;
+        useForceField = t.useForceField;
+        slowPercentForceField = t.slowPercentForceField;
     }
 }
 

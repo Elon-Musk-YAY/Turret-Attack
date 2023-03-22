@@ -28,7 +28,7 @@ public class EnemyMovement : MonoBehaviour
         Vector3 calculation = dir.normalized * enemy.speed * Time.deltaTime;
         transform.Translate(new Vector3(calculation.x,0,calculation.z), Space.World);
 
-        if (Vector3.Distance(new Vector3(transform.position.x,0,transform.position.z), new Vector3(target.position.x,0,target.position.z)) <= 0.5f)
+        if (Vector3.Distance(new Vector3(transform.position.x,0,transform.position.z), new Vector3(target.position.x,0,target.position.z)) <= WaveSpawner.instance.nextWaypointErr)
         {
             GetNextWaypoint();
         }

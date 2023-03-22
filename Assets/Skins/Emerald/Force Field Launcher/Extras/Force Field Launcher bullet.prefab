@@ -62,7 +62,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: dcc0b934856f64adf9a8f9a16a7a3835, type: 2}
+  - {fileID: 2100000, guid: 699e022cdb06e43b88813f904e903c90, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -99,5 +99,5 @@ MonoBehaviour:
   impactEffect: {fileID: 6849062505575386722, guid: 39d01613664b74c30a8806c7ff30cfb9, type: 3}
   speed: 70
   explosionRadius: 0
-  forceFieldPrefab: {fileID: 6776460621695134237, guid: cd2a1a26dcda54e63a00ce4215f851f6, type: 3}
+  forceFieldPrefab: {fileID: 6776460621695134237, guid: c5b2787b86ba844779dc0f7dc280133f, type: 3}
   damage: 50

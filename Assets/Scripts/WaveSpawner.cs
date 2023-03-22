@@ -16,6 +16,7 @@ public class WaveSpawner : MonoBehaviour
     public Text waveText;
     public GameObject skinBanner;
     public Text skinBannerText;
+    public float nextWaypointErr = 0.8f;
 
     public Transform spawnPoint;
 
@@ -58,7 +59,7 @@ public class WaveSpawner : MonoBehaviour
         waveUI.SetActive(false);
     }
     public IEnumerator SkinAlert() {
-        if ((waveIndex / 2) - 1 <= 50 && lastSkinAlert != "Ruby" && waveIndex / 2 == 50)
+        if (lastSkinAlert != "Ruby" && waveIndex / 2 == 49)
         {
             skinBanner.SetActive(true);
             lastSkinAlert = "Ruby";
@@ -66,11 +67,27 @@ public class WaveSpawner : MonoBehaviour
             yield return new WaitForSeconds(5f);
             skinBanner.SetActive(false);
         }
-        else if ((waveIndex / 2) - 1 <= 100 && lastSkinAlert != "Gold" && waveIndex/2 == 100)
+        else if (lastSkinAlert != "Gold" && waveIndex/2 == 99)
         {
             skinBanner.SetActive(true);
             lastSkinAlert = "Gold";
             skinBannerText.text = "You now have the <b><color=\"yellow\">Gold</color></b> skin!";
+            yield return new WaitForSeconds(5f);
+            skinBanner.SetActive(false);
+        }
+        else if (lastSkinAlert != "Emerald" && waveIndex / 2 == 199)
+        {
+            skinBanner.SetActive(true);
+            lastSkinAlert = "Emerald";
+            skinBannerText.text = "You now have the <b><color=\"green\">Emerald</color></b> skin!";
+            yield return new WaitForSeconds(5f);
+            skinBanner.SetActive(false);
+        }
+        else if (lastSkinAlert != "Holo" && waveIndex / 2 == 299)
+        {
+            skinBanner.SetActive(true);
+            lastSkinAlert = "Holo";
+            skinBannerText.text = "You now have the <b><color=\"cyan\">Holographic</color></b> skin!";
             yield return new WaitForSeconds(5f);
             skinBanner.SetActive(false);
         }
@@ -139,9 +156,9 @@ public class WaveSpawner : MonoBehaviour
             enemyHealth += healthIncrement * enemyHealth;
             enemySpeed += speedIncrement * enemySpeed;
             enemyWorth += enemyWorth * worthIncrement;
-            enemyHealth = Mathf.Clamp(enemyHealth, 1, 1200);
+            enemyHealth = Mathf.Clamp(enemyHealth, 1, 12000);
             enemySpeed = Mathf.Clamp(enemySpeed, 1, 6);
-            enemyWorth = Mathf.Clamp(enemyWorth, 1, 1500);
+            enemyWorth = Mathf.Clamp(enemyWorth, 1, 15000);
         }
         if (waveIndex/2 == finalRoundNum)
         {

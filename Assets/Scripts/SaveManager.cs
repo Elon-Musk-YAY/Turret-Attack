@@ -1,37 +1,35 @@
 ﻿using UnityEngine;
 using System.IO;
 using System.IO.Compression;
+using UnityEngine.UI;
+using UnityEditor;
 
 public class SaveManager : MonoBehaviour
 {
 	// Use this for initialization
 
-	public string zipPath = "/Users/akshardesai/Desktop/Turret_Attack_Save.save";
-	void Start()
-	{
-	}
-
-	// Update is called once per frame
-	void Update()
-	{
-			
-	}
-
-
-	public void ExportSave()
-    {
-		//Debug.LogError("run");
-  //      StandaloneFileBrowser.SaveFilePanelAsync("Save File", "", "Turret_Attack_Save", "save", (string path) => {
-  //          string savePath = Path.Combine(Application.persistentDataPath, "save0");
-  //          ZipFile.CreateFromDirectory(savePath, path);
-  //      });
-        //string tempPath = Path.Combine(Application.temporaryCachePath, "Turret_Attack_Save.zip");
-        
+	bool secondConfirm = false;
+	public Text wipeSaveText;
+	private void ConfirmOff() {
+		secondConfirm = false;
+        wipeSaveText.text = "Wipe Save";
     }
 
-	public void ImportSave()
-    {
-        //ZipFile.ExtractToDirectory(zipPath, extractPath);
-    }
+
+	public void WipeSave() {
+		if (secondConfirm)
+		{
+			if (Directory.Exists(SaveSystem.savePath)) {
+				FileUtil.DeleteFileOrDirectory(SaveSystem.savePath);
+				Application.Quit(0);
+			}
+		}
+		else
+		{
+			secondConfirm = true;
+			Invoke(nameof(ConfirmOff), 5);
+			wipeSaveText.text = "Wipe Save(Press again to confirm deletion)";
+		}
+	}
 }
 

@@ -77,8 +77,14 @@ public class Turret : MonoBehaviour
         t.upgrades = upgrades;
         t.fireRate = fireRate;
         t.useLaser = useLaser;
+        t.useForceField = useForceField;
+        t.ammoDmgMultiplier = ammoDmgMultiplier;
         t.slowPercent = slowPercent;
         t.damageOverTime = damageOverTime;
+        t.damagePerSecond = damagePerSecond;
+        t.slowPercentForceField = slowPercentForceField;
+        t.forceFieldLife = forceFieldLife;
+        t.blastRadius = blastRadius;
         t.turnSpeed = turnSpeed;
         t.index = index;
         t.isMissle = isMissle;

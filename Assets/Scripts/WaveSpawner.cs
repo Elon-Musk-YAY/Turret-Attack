@@ -29,6 +29,9 @@ public class WaveSpawner : MonoBehaviour
     public float enemyHealth =1;
     public float enemySpeed = 1;
     public float enemyWorth = 1;
+    public int maxHealth = 12_000;
+    public int maxSpeed = 6;
+    public int maxWorth = 15_000;
     public float healthIncrement = 0.5f;
     public float speedIncrement = 0.1f;
     public float worthIncrement = 0.5f;
@@ -156,9 +159,9 @@ public class WaveSpawner : MonoBehaviour
             enemyHealth += healthIncrement * enemyHealth;
             enemySpeed += speedIncrement * enemySpeed;
             enemyWorth += enemyWorth * worthIncrement;
-            enemyHealth = Mathf.Clamp(enemyHealth, 1, 12000);
-            enemySpeed = Mathf.Clamp(enemySpeed, 1, 6);
-            enemyWorth = Mathf.Clamp(enemyWorth, 1, 15000);
+            enemyHealth = Mathf.Clamp(enemyHealth, 1, maxHealth);
+            enemySpeed = Mathf.Clamp(enemySpeed, 1, maxSpeed);
+            enemyWorth = Mathf.Clamp(enemyWorth, 1, maxWorth);
         }
         if (waveIndex/2 == finalRoundNum)
         {

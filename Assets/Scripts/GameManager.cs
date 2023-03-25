@@ -155,7 +155,6 @@ public class GameManager : MonoBehaviour
         };
         PlayerStats.Lives = (int)save.Lives;
         PlayerStats.Money = save.Money;
-        Debug.LogError($"win: {save.win}");
         win = save.win;
         PlayerStats.Rounds = (int)Mathf.Clamp(save.Rounds, -1, Mathf.Infinity);
         WaveSpawner.instance.enemySpeed = save.enemySpeed;
@@ -304,6 +303,11 @@ public class GameManager : MonoBehaviour
         {
             print(e.StackTrace);
         }
+    }
+
+    private void Start()
+    {
+        Debug.LogError("halloween " + gameObject.GetComponent<SeasonalEventsManager>().GetSeasonalEvents()["halloween"]) ;
     }
     void Update()
     {

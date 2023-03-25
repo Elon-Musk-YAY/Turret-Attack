@@ -71,11 +71,11 @@ public static class SaveSystem
         // load turrets
         int turretCount = 0;
         BinaryFormatter formatter = new();
-
         if (File.Exists(countPath))
         {
             FileStream countStream = new FileStream(countPath, FileMode.Open);
             turretCount = (int)formatter.Deserialize(countStream);
+            Debug.Log(Application.persistentDataPath);
             countStream.Close();
             countStream.Dispose();
         }
@@ -94,10 +94,12 @@ public static class SaveSystem
         // load main data
         if (File.Exists(path))
         {
+            Debug.Log("path exists");
             FileStream stream = new FileStream(path, FileMode.Open);
             try {
             if (stream.Length == 0)
             {
+                    Debug.Log("main file does not have any data");
                 PlayerStats.instance.StartSave();
                 PlayerStats.instance.LoadStartData();
                 stream.Dispose();
@@ -108,7 +110,7 @@ public static class SaveSystem
             }
             catch (Exception e)
             {
-                Debug.LogError("file is curroperted\n" + e + "\n" + stream);
+                Debug.LogError("file is currupted\n" + e + "\n" + stream);
             }
             GameManager.LoadExtraData();
             stream.Dispose();

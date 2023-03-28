@@ -1,7 +1,7 @@
 ﻿using System;
 public class SeasonalEvents
 {
-    public static bool halloweenSeason { get; set; }
-    public static bool christmasSeason { get; set; }
+    public static bool HalloweenSeason = false;
+    public static bool ChristmasSeason = false;
 }
 

@@ -13,6 +13,8 @@ GameObject:
   - component: {fileID: 4314758527219527677}
   - component: {fileID: 2903584423903230980}
   - component: {fileID: -5022974674139955257}
+  - component: {fileID: -2871860924005012995}
+  - component: {fileID: 3792185965066192284}
   m_Layer: 3
   m_Name: Node
   m_TagString: Untagged
@@ -122,4 +124,36 @@ MonoBehaviour:
     cost: 0
     id: 0
   positionOffset: {x: 0, y: 0.5, z: 0}
+  startColor: {r: 0, g: 0, b: 0, a: 0}
+  startEmission: {r: 0, g: 0, b: 0, a: 0}
   isSelected: 0
+--- !u!114 &-2871860924005012995
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5835613239386633157}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3af320a6ca58345be83ecdb9b3b5dd76, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  toggleEvent: 0
+  newGameObjectMaterial: {fileID: 2100000, guid: 649d660ae620843b599410bdadaa15b5, type: 2}
+  isNode: 1
+--- !u!114 &3792185965066192284
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5835613239386633157}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3af320a6ca58345be83ecdb9b3b5dd76, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  toggleEvent: 1
+  newGameObjectMaterial: {fileID: 2100000, guid: a615ee1a9a719482590fa02732c8356a, type: 2}
+  isNode: 0

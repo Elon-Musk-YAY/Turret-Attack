@@ -9785,7 +9785,7 @@ MonoBehaviour:
   animationSpeed: 0
   forceFieldLife: 0
   damagePerSecond: 0
-  slowPercentForce: 0.5
+  slowPercentForceField: 0.5
   hardcoreTower: 0
   laser: {fileID: 0}
   sellMulti: 3

@@ -50,6 +50,7 @@ public static class SaveSystem
         formatter.Serialize(stream, save);
         stream.Close();
         stream.Dispose();
+        Debug.LogWarning(turrets.Count);
         FileStream countStream = new FileStream(countPath, FileMode.Create);
         formatter.Serialize(countStream, turrets.Count);
         countStream.Close();
@@ -75,7 +76,7 @@ public static class SaveSystem
         {
             FileStream countStream = new FileStream(countPath, FileMode.Open);
             turretCount = (int)formatter.Deserialize(countStream);
-            Debug.Log(Application.persistentDataPath);
+            Debug.Log(turretCount);
             countStream.Close();
             countStream.Dispose();
         }

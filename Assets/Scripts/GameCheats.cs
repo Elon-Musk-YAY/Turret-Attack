@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -7,37 +8,50 @@ public class GameCheats : MonoBehaviour
     // Start is called before the first frame update
     public InputField moneyInputField;
     public GameObject cheatsUI;
-    private int ExpandNum(string num)
+
+    private string RemoveBadChars(string p) {
+        List<string> badChars = new List<string>
+        {
+            "k","m","b","t","qa","qi"
+        }
+        ;
+        string n = p;
+        n = n.ToLower();
+        foreach(string badChar in badChars) {
+            n = n.Replace(badChar, "");
+        }
+        return n;
+    }
+    private long ExpandNum(string num)
     {
         double newVal;
+        Dictionary<string, long> multiplyValues = new Dictionary<string, long>
+        {
+            {"qi", 1_000_000_000_000_000_000 },
+            {"qa", 1_000_000_000_000_000 },
+            {"t", 1_000_000_000_000 },
+            {"b", 1_000_000_000 },
+            {"m", 1_000_000 },
+            {"k", 1_000 }
+        }
+        ;
+
+        
         string suffix = num.ToLower()[num.Length - 1].ToString();
-        if (suffix == "b")
-        {
-            num = num.ToLower().Replace(suffix, "").Replace("m","").Replace("k","");
+        string suffix2char = num.ToLower()[num.Length - 2].ToString() + num.ToLower()[num.Length-1].ToString();
+        if (suffix != "") {
+            long multiplyVal = multiplyValues[suffix];
+            if (!multiplyValues.ContainsKey(suffix) && multiplyValues[suffix2char] > 0) {
+                multiplyVal = multiplyValues[suffix2char];
+            }
+            num = RemoveBadChars(num);
             newVal = double.Parse(num);
-            newVal *= 1_000_000_000;
-            return (int)newVal;
-
-        }
-        if (suffix == "m")
-        {
-            num = num.ToLower().Replace(suffix, "").Replace("b", "").Replace("k", "");
-            newVal = double.Parse(num);
-            newVal *= 1_000_000;
-            return (int)newVal;
-
-        }
-        else if (suffix == "k")
-        {
-            num = num.ToLower().Replace(suffix, "").Replace("m", "").Replace("b", "");
-            newVal = double.Parse(num);
-            newVal *= 1_000;
-            return (int)newVal;
-
+            newVal *= multiplyVal;
+            return (long)newVal;
         }
         else
         {
-            return int.Parse(num);
+            return long.Parse(num);
         }
     }
 
@@ -72,13 +86,12 @@ public class GameCheats : MonoBehaviour
     {
         try
         {
-            if (ExpandNum(moneyInputField.text) < 0 || ExpandNum(moneyInputField.text) > 2_000_000_000)
+            if (ExpandNum(moneyInputField.text) < 0 || ExpandNum(moneyInputField.text) > long.MaxValue)
             {
                 moneyInputField.text = "BAD INPUT";
                 return;
             }
             PlayerStats.Money = ExpandNum(moneyInputField.text);
-            //Debug.LogError(ExpandNum(moneyInputField.text));
         }
         catch (FormatException)
         {

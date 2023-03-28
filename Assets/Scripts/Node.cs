@@ -16,7 +16,9 @@ public class Node : MonoBehaviour
     public TurretBlueprint turretBlueprint;
     private Renderer rend;
     public Vector3 positionOffset;
-    private Color startColor;
+    public Color startColor;
+    [ColorUsage(true, true)]
+    public Color startEmission;
     public bool isSelected = false;
     private void Update()
     {
@@ -25,10 +27,18 @@ public class Node : MonoBehaviour
             if (buildManager.hasMoney)
             {
                 rend.material.color = hoverColor;
+                if (SeasonalEvents.HalloweenSeason || SeasonalEvents.ChristmasSeason)
+                {
+                    rend.material.SetColor("_EmissionColor", startEmission);
+
+                }
             }
             else
             {
                 rend.material.color = notEnoughMoneyColor;
+                if (SeasonalEvents.HalloweenSeason || SeasonalEvents.ChristmasSeason) {
+                    rend.material.SetColor("_EmissionColor", Color.red * Mathf.Pow(2,6f));
+                }
             }
         }
     }
@@ -43,9 +53,18 @@ public class Node : MonoBehaviour
         if (buildManager.hasMoney)
         {
             rend.material.color = hoverColor;
+            if (SeasonalEvents.HalloweenSeason || SeasonalEvents.ChristmasSeason)
+            {
+                rend.material.SetColor("_EmissionColor", startEmission);
+
+            }
         } else
         {
             rend.material.color = notEnoughMoneyColor;
+            if (SeasonalEvents.HalloweenSeason || SeasonalEvents.ChristmasSeason)
+            {
+                rend.material.SetColor("_EmissionColor", notEnoughMoneyColor * 5f);
+            }
         }
     }
 
@@ -285,12 +304,17 @@ public class Node : MonoBehaviour
     {
         isSelected = false;
         rend.material.color = startColor;
+        if (SeasonalEvents.HalloweenSeason || SeasonalEvents.ChristmasSeason)
+        {
+            rend.material.SetColor("_EmissionColor", startEmission);
+        }
     }
 
     private void Start()
     {
         rend = GetComponent<Renderer>();
         startColor = rend.material.color;
+        startEmission = rend.material.GetColor("_EmissionColor");
         buildManager = BuildManager.instance;
     }
 }

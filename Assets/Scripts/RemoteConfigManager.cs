@@ -5,6 +5,7 @@ using Unity.Services.Authentication;
 using Unity.Services.Core;
 using UnityEngine;
 using Unity.Services.Core.Environments;
+using UnityEngine.SceneManagement;
 
 public class RemoteConfigManager : MonoBehaviour
 {
@@ -41,8 +42,11 @@ public class RemoteConfigManager : MonoBehaviour
 
     void ApplyRemoteSettings(ConfigResponse configResponse)
     {
-        UpdateChecker.instance.CheckForUpdates(RemoteConfigService.Instance.appConfig.GetString("remoteVersion"));
-        SeasonalEventsManager.instance.SetSeasonalEvents(RemoteConfigService.Instance.appConfig.GetBool("halloweenSeason"), RemoteConfigService.Instance.appConfig.GetBool("christmasSeason"));
+        if (SceneManager.GetActiveScene().name == "TowerDefenseMenu" && configResponse.requestOrigin == ConfigOrigin.Remote)
+        {
+            UpdateChecker.instance.CheckForUpdates(RemoteConfigService.Instance.appConfig.GetString("remoteVersion"));
+            SeasonalEventsManager.instance.SetSeasonalEvents(RemoteConfigService.Instance.appConfig.GetBool("halloweenSeason"), RemoteConfigService.Instance.appConfig.GetBool("christmasSeason"));
+        }
     }
 }
 

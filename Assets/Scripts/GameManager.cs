@@ -12,6 +12,7 @@ public class GameManager : MonoBehaviour
     public GameObject setNodes;
     public GameObject youWinUI;
     public GameObject winFireWorks;
+    public GameObject christmasSnow;
     public float sellMulti = 0.5f;
     public static float sellMult;
     public static bool win;
@@ -307,7 +308,12 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        Debug.LogError("halloween " + gameObject.GetComponent<SeasonalEventsManager>().GetSeasonalEvents()["halloween"]) ;
+        Debug.LogError("halloween " + SeasonalEvents.HalloweenSeason + "    christmas: " + SeasonalEvents.ChristmasSeason);
+        if (SeasonalEvents.ChristmasSeason && GraphicsManager.particles) {
+            christmasSnow.SetActive(true);
+        } else {
+            christmasSnow.SetActive(false);
+        }
     }
     void Update()
     {

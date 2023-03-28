@@ -1,9 +1,6 @@
 ﻿using UnityEngine;
 using System.IO;
-using System.IO.Compression;
 using UnityEngine.UI;
-using UnityEditor;
-
 public class SaveManager : MonoBehaviour
 {
 	// Use this for initialization
@@ -20,16 +17,21 @@ public class SaveManager : MonoBehaviour
 		if (secondConfirm)
 		{
 			if (Directory.Exists(SaveSystem.savePath)) {
-				FileUtil.DeleteFileOrDirectory(SaveSystem.savePath);
-				Application.Quit(0);
+                Directory.Delete(SaveSystem.savePath, true);
+                Application.Quit(0);
 			}
 		}
 		else
 		{
-			secondConfirm = true;
-			Invoke(nameof(ConfirmOff), 5);
-			wipeSaveText.text = "Wipe Save(Press again to confirm deletion)";
-		}
-	}
+            // Create a new instance of the FilePicker class
+
+            //Call the OpenFile function with the title and filter
+            //FilePicker.instance.ShowFilePicker();
+
+            secondConfirm = true;
+            Invoke(nameof(ConfirmOff), 5);
+            wipeSaveText.text = "Wipe Save(Press again to confirm deletion)";
+        }
+    }
 }
 

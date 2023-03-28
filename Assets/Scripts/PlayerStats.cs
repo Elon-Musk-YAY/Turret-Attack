@@ -37,6 +37,7 @@ public class PlayerStats : MonoBehaviour
     public void PrepareSave()
     {
         SaveSystem.turrets = new();
+        Debug.Log(turrets.Count);
         for (int i = 0; i < turrets.Count; i++)
         {
             if (turrets[i] == null) continue;
@@ -46,13 +47,16 @@ public class PlayerStats : MonoBehaviour
 
     public void StartSave()
     {
-        print("Saving Data...");
+        print("Saving Data..." + gameObject.name);
         SaveSystem.SaveData();
     }
 
     private void OnApplicationQuit()
     {
+        if (SceneManager.GetActiveScene().name == "TowerDefenseMain") {
         StartSave();
+
+        }
     }
     private void Start()
     {

@@ -39,11 +39,19 @@ public class EnemyInfo : MonoBehaviour
     {
         ui.SetActive(true);
         StartCoroutine(ToggleBlur());
+        foreach (Node node in GameManager.nodes.GetComponentsInChildren<Node>())
+        {
+            node.enabled = false;
+        }
     }
     public void CloseEnemyInfoMenu()
     {
         ui.SetActive(false);
         StartCoroutine(ToggleBlur());
+        foreach (Node node in GameManager.nodes.GetComponentsInChildren<Node>())
+        {
+            node.enabled = true;
+        }
     }
     IEnumerator ToggleBlur()
     {

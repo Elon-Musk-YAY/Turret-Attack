@@ -40,14 +40,6 @@ public class SceneFader : MonoBehaviour
             img.color = new Color(0, 0, 0, a);
             yield return 0;
         }
-        if (scene == LoadGameAsync.instance.gameSceneName)
-        {
-            LoadGameAsync.instance.OpenScene();
-            //SceneManager.LoadScene(scene);
-        }
-        else
-        {
-            SceneManager.LoadScene(scene);
-        }
+        SceneManager.LoadScene(scene);
     }
 }

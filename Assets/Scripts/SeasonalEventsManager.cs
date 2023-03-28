@@ -11,17 +11,8 @@ public class SeasonalEventsManager: MonoBehaviour
     }
     public void SetSeasonalEvents(bool halloween, bool christmas) {
         Debug.LogWarning($"Values recieved: {halloween} and {christmas}");
-		SeasonalEvents.halloweenSeason = halloween;
-		SeasonalEvents.christmasSeason = christmas;
+		SeasonalEvents.HalloweenSeason = halloween;
+		SeasonalEvents.ChristmasSeason = christmas;
 	}
-    public Dictionary<string, bool> GetSeasonalEvents()
-    {
-        Dictionary<string, bool> values = new()
-        {
-            { "halloween", SeasonalEvents.halloweenSeason },
-            {"christmas", SeasonalEvents.christmasSeason }
-        };
-        return values;
-    }
 }
 

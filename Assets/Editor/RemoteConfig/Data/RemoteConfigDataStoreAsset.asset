@@ -12,20 +12,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 469c24fdb3bd6431b92cc1465bd9166b, type: 3}
   m_Name: RemoteConfigDataStoreAsset
   m_EditorClassIdentifier: 
-  _rsKeyList: "[\n  {\n    \"metadata\": {\n      \"entityId\": \"d4c69574-e062-4ee8-8237-91b9302bada7\"\n   
+  _rsKeyList: "[\n  {\n    \"metadata\": {\n      \"entityId\": \"412e6e8a-ab75-444a-afda-c8b20d7bd595\"\n   
     },\n    \"rs\": {\n      \"key\": \"remoteVersion\",\n      \"type\": \"string\",\n     
     \"value\": \"1.3\"\n    }\n  },\n  {\n    \"metadata\": {\n      \"entityId\":
-    \"6fc9c783-7e43-4992-b8b2-dd534278cd01\"\n    },\n    \"rs\": {\n      \"key\":
-    \"halloweenSeason\",\n      \"type\": \"bool\",\n      \"value\": false\n   
-    }\n  },\n  {\n    \"metadata\": {\n      \"entityId\": \"812ffacd-41bb-44f3-9626-8dc20ef662b6\"\n   
+    \"a50061ca-3384-4a6b-b4f6-f29a30763a71\"\n    },\n    \"rs\": {\n      \"key\":
+    \"halloweenSeason\",\n      \"type\": \"bool\",\n      \"value\": true\n    }\n 
+    },\n  {\n    \"metadata\": {\n      \"entityId\": \"4ec1ee00-4080-4b20-895b-c3102c8308c7\"\n   
     },\n    \"rs\": {\n      \"key\": \"christmasSeason\",\n      \"type\": \"bool\",\n     
-    \"value\": false\n    }\n  }\n]"
-  _rsLastCachedKeyList: "[\n  {\n    \"metadata\": {\n      \"entityId\": \"d4c69574-e062-4ee8-8237-91b9302bada7\"\n   
+    \"value\": true\n    }\n  }\n]"
+  _rsLastCachedKeyList: "[\n  {\n    \"metadata\": {\n      \"entityId\": \"412e6e8a-ab75-444a-afda-c8b20d7bd595\"\n   
     },\n    \"rs\": {\n      \"key\": \"remoteVersion\",\n      \"type\": \"string\",\n     
     \"value\": \"1.3\"\n    }\n  },\n  {\n    \"metadata\": {\n      \"entityId\":
-    \"6fc9c783-7e43-4992-b8b2-dd534278cd01\"\n    },\n    \"rs\": {\n      \"key\":
+    \"a50061ca-3384-4a6b-b4f6-f29a30763a71\"\n    },\n    \"rs\": {\n      \"key\":
     \"halloweenSeason\",\n      \"type\": \"bool\",\n      \"value\": false\n   
-    }\n  },\n  {\n    \"metadata\": {\n      \"entityId\": \"812ffacd-41bb-44f3-9626-8dc20ef662b6\"\n   
+    }\n  },\n  {\n    \"metadata\": {\n      \"entityId\": \"4ec1ee00-4080-4b20-895b-c3102c8308c7\"\n   
     },\n    \"rs\": {\n      \"key\": \"christmasSeason\",\n      \"type\": \"bool\",\n     
     \"value\": false\n    }\n  }\n]"
   _environments: "[\n  {\n    \"projectId\": \"6d45b516-a9db-45e0-a038-6f72df8f7b93\",\n   

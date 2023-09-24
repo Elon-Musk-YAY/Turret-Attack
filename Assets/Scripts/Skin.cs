@@ -7,6 +7,8 @@ public class Skin : MonoBehaviour
 	[Header("Standard Turret")]
 	public GameObject standardTurretPrefab;
 	public GameObject standardTurretPrefabUpgraded;
+	public Color bulletAndImpactColor;
+	public GameObject impactEffectPrefab;
 	[Space(10)]
 	[Header("Missle Launcher")]
 	public GameObject missleLauncherPrefab;
@@ -19,6 +21,13 @@ public class Skin : MonoBehaviour
 	[Header("Force Field Launcher")]
 	public GameObject forceFieldLauncherPrefab;
 	public GameObject forceFieldLauncherPrefabUpgraded;
+    [Space(10)]
+    [Header("Buffer")]
+    public GameObject bufferPrefab;
+    [Space(10)]
+    [Header("Spiral Turret")]
+    public GameObject spiralTurretPrefab;
+    public GameObject spiralTurretPrefabUpgraded;
 
 
 }

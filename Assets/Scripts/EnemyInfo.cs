@@ -1,4 +1,6 @@
+using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
@@ -8,128 +10,117 @@ public class EnemyInfo : MonoBehaviour
 {
     [Header("Main")]
     public GameObject postProcessVolume;
-    public GameObject ui;
-    [Header("Descriptions")]
-    [TextArea(3,10)]
-    public string normalInfo;
-    [TextArea(3, 10)]
-    public string toughInfo;
-    [TextArea(3, 10)]
-    public string fastInfo;
-    [TextArea(3, 10)]
-    public string miniBossInfo;
-    [TextArea(3, 10)]
-    public string megaBossInfo;
+    public CanvasGroup uiAlpha;
 
     [Header("Info GameObjects")]
     public Text infoTitle;
     public Text infoText;
     public Text statsText;
     public Text boosterText;
-    public Image infoImage;
+    public RawImage infoImage;
 
-    [Header("Enemy Images")]
-    public Sprite normalImage;
-    public Sprite toughImage;
-    public Sprite fastImage;
-    public Sprite miniBossImage;
-    public Sprite megaBossImage;
+    public ScrollRect view;
+
+
+    [SerializeField]
+    private List<EnemySetup>  blocks = new();
+
+    public UIScreen enemyInfoUIScreen;
 
     public void OpenEnemyInfoMenu()
     {
-        ui.SetActive(true);
         StartCoroutine(ToggleBlur());
+        uiAlpha.gameObject.SetActive(true);
+        uiAlpha.LeanAlpha(1, 0.5f).setEaseInOutQuart();
+        enemyInfoUIScreen.FadeIn(delay: 0.5f);
         foreach (Node node in GameManager.nodes.GetComponentsInChildren<Node>())
         {
             node.enabled = false;
         }
+        GameManager.Instance.gameCamera.GetComponent<CameraController>().enabled = false;
     }
+
+
+
     public void CloseEnemyInfoMenu()
     {
-        ui.SetActive(false);
-        StartCoroutine(ToggleBlur());
-        foreach (Node node in GameManager.nodes.GetComponentsInChildren<Node>())
+        enemyInfoUIScreen.FadeOut(delay: 0f);
+        uiAlpha.LeanAlpha(0, 0.5f).setEaseInOutQuart().setDelay(0.5f).setOnComplete(() =>
         {
-            node.enabled = true;
-        }
+
+            uiAlpha.gameObject.SetActive(false);
+            foreach (Node node in GameManager.nodes.GetComponentsInChildren<Node>())
+            {
+                node.enabled = true;
+            }
+            GameManager.Instance.gameCamera.GetComponent<CameraController>().enabled = true;
+            //enemyInfoShallow.SetActive(false);
+        });
+        StartCoroutine(ToggleBlur());
+        
     }
     IEnumerator ToggleBlur()
     {
         postProcessVolume.GetComponent<Volume>().profile.TryGet(out DepthOfField d);
+        print(d);
         d.active = !d.active;
         yield return null;
     }
+    private void Start()
+    {
+        foreach (EnemySetup ei in WaveSpawner.Instance.enemies)
+        {
+            if (ei.waveToStartSpawning != 0)
+            {
+                blocks.Add(ei);
+            }
+        }
+
+        enemyInfoUIScreen.SetAllTo(0f);
+        uiAlpha.alpha = 0;
+        //enemyInfoShallow.SetActive(false);
+
+        //WaveSpawner.Instance.enemies[0].texture.
+    }
+
     private void Update()
     {
-        if (!ui.activeSelf && statsText != null)
+
+        view.scrollSensitivity = SettingsManager.scrollSensitivity * 20;
+        foreach (EnemySetup block in blocks)
         {
-            infoText.text = "The Normal Enemy";
-            infoImage.sprite = normalImage;
-            infoText.text = normalInfo;
-            Transform prefab = WaveSpawner.instance.standardEnemyPrefab;
-            statsText.text =
-            $"Start Health: {GameManager.ShortenNum(Mathf.RoundToInt(prefab.GetComponent<Enemy>().startHealth * WaveSpawner.instance.enemyHealth))}\n" +
-            $"Start Speed: {(int)(prefab.GetComponent<Enemy>().startSpeed * WaveSpawner.instance.enemySpeed)}\n" +
-            $"Gain From Death: ${GameManager.ShortenNum(Mathf.RoundToInt(prefab.GetComponent<Enemy>().worth * WaveSpawner.instance.enemyWorth))}";
+            if (WaveSpawner.Instance.waveIndex /2 < block.waveToStartSpawning)
+            {
+                block.referenceBlock.SetActive(false);
+            } else
+            {
+                block.referenceBlock.SetActive(true);
+            }
         }
-        boosterText.text = $"Enemy Health Multiplier: {WaveSpawner.instance.enemyHealth:0.00}x\n" +
-            $"Enemy Speed Multiplier: {WaveSpawner.instance.enemySpeed:0.00}x\n" +
-            $"Enemy Gain Multiplier: {WaveSpawner.instance.enemyWorth:0.00}x";
-        
+        if (!uiAlpha.gameObject.activeSelf && statsText != null)
+        {
+            OpenInfo(0);
+        }
+        boosterText.text = $"Enemy Health Multiplier: {GameManager.ShortenNum(WaveSpawner.Instance.enemyHealth):0.00}x\n" +
+            $"Enemy Speed Multiplier: {GameManager.ShortenNum(WaveSpawner.Instance.enemySpeed):0.00}x\n" +
+            $"Enemy Gain Multiplier: {GameManager.ShortenNum(WaveSpawner.Instance.enemyWorth):0.00}x";
+
     }
-    public void OpenNormalInfo()
+
+    int current = 0;
+
+    public void OpenInfo(int index)
     {
-        infoImage.sprite = normalImage;
-        Transform prefab = WaveSpawner.instance.standardEnemyPrefab;
-        infoTitle.text = "The Normal Enemy";
-        infoText.text = normalInfo;
+        current = index;
+        infoImage.texture = WaveSpawner.Instance.enemies[index].texture;
+        Transform prefab = WaveSpawner.Instance.enemies[index].transform;
+        Enemy pE = prefab.GetComponent<Enemy>();
+        infoTitle.text = WaveSpawner.Instance.enemies[index].name;
+        infoText.text = WaveSpawner.Instance.enemies[index].info;
         statsText.text =
-            $"Start Health: {GameManager.ShortenNum(Mathf.RoundToInt(prefab.GetComponent<Enemy>().startHealth * WaveSpawner.instance.enemyHealth))}\n" +
-            $"Start Speed: {(int)(prefab.GetComponent<Enemy>().startSpeed * WaveSpawner.instance.enemySpeed)}\n" +
-            $"Gain From Death: ${GameManager.ShortenNum(Mathf.RoundToInt(prefab.GetComponent<Enemy>().worth * WaveSpawner.instance.enemyWorth))}";
-    }
-    public void OpenToughInfo()
-    {
-        infoImage.sprite = toughImage;
-        Transform prefab = WaveSpawner.instance.toughEnemyPrefab;
-        infoTitle.text = "The Tough Enemy";
-        infoText.text = toughInfo;
-        statsText.text =
-            $"Start Health: {GameManager.ShortenNum(Mathf.RoundToInt(prefab.GetComponent<Enemy>().startHealth * WaveSpawner.instance.enemyHealth))}\n" +
-            $"Start Speed: {(int)(prefab.GetComponent<Enemy>().startSpeed * WaveSpawner.instance.enemySpeed)}\n" +
-            $"Gain From Death: ${GameManager.ShortenNum(Mathf.RoundToInt(prefab.GetComponent<Enemy>().worth * WaveSpawner.instance.enemyWorth))}";
-    }
-    public void OpenFastInfo()
-    {
-        infoImage.sprite = fastImage;
-        Transform prefab = WaveSpawner.instance.fastEnemyPrefab;
-        infoTitle.text = "The Speedy Enemy";
-        infoText.text = fastInfo;
-        statsText.text =
-            $"Start Health: {GameManager.ShortenNum(Mathf.RoundToInt(prefab.GetComponent<Enemy>().startHealth * WaveSpawner.instance.enemyHealth))}\n" +
-            $"Start Speed: {(int)(prefab.GetComponent<Enemy>().startSpeed * WaveSpawner.instance.enemySpeed)}\n" +
-            $"Gain From Death: ${GameManager.ShortenNum(Mathf.RoundToInt(prefab.GetComponent<Enemy>().worth * WaveSpawner.instance.enemyWorth))}";
-    }
-    public void OpenMiniBossInfo()
-    {
-        infoImage.sprite = miniBossImage;
-        Transform prefab = WaveSpawner.instance.miniBossPrefab;
-        infoTitle.text = "The Mini Boss";
-        infoText.text = miniBossInfo;
-        statsText.text =
-            $"Start Health: {GameManager.ShortenNum(Mathf.RoundToInt(prefab.GetComponent<Enemy>().startHealth * WaveSpawner.instance.enemyHealth))}\n" +
-            $"Start Speed: {(int)(prefab.GetComponent<Enemy>().startSpeed * WaveSpawner.instance.enemySpeed)}\n" +
-            $"Gain From Death: ${GameManager.ShortenNum(Mathf.RoundToInt(prefab.GetComponent<Enemy>().worth * WaveSpawner.instance.enemyWorth))}";
-    }
-    public void OpenMegaBossInfo()
-    {
-        infoImage.sprite = megaBossImage;
-        Transform prefab = WaveSpawner.instance.megaBossPrefab;
-        infoTitle.text = "The Mega Boss";
-        infoText.text = megaBossInfo;
-        statsText.text =
-            $"Start Health: {GameManager.ShortenNum(Mathf.RoundToInt(prefab.GetComponent<Enemy>().startHealth * WaveSpawner.instance.enemyHealth))}\n" +
-            $"Start Speed: {(int)(prefab.GetComponent<Enemy>().startSpeed * WaveSpawner.instance.enemySpeed)}\n" +
-            $"Gain From Death: ${GameManager.ShortenNum(Mathf.RoundToInt(prefab.GetComponent<Enemy>().worth * WaveSpawner.instance.enemyWorth))}";
+            $"Start Health: {GameManager.ShortenNumD(System.Math.Round(pE.startHealth * WaveSpawner.Instance.enemyHealth))}\n" +
+            $"Start Speed: {(int)(pE.startSpeed * WaveSpawner.Instance.enemySpeed)}\n" +
+            $"Gain From Death: ${GameManager.ShortenNumD(System.Math.Round(pE.worth * WaveSpawner.Instance.enemyWorth))}\n"+
+            $"Enemy Type: {pE.enemyType}";
     }
 }

@@ -9,6 +9,12 @@ public class CameraController : MonoBehaviour
     public float scrollSpeed = 5f;
     public float minY = 10f;
     public float maxY = 80f;
+    [SerializeField]
+    private Vector3 targetPosition;
+
+    [SerializeField]
+    private float smoothFactor = 2f;
+
 
 
 
@@ -36,12 +42,18 @@ public class CameraController : MonoBehaviour
         {
             transform.Translate(Vector3.back * panSpeed * Time.deltaTime, Space.World);
         }
-
+        if (targetPosition != null && targetPosition.y >= minY && targetPosition.y != transform.position.y)
+        {
+            transform.position = Vector3.Lerp(transform.position, targetPosition, smoothFactor);
+        }
         float scroll = Input.GetAxis("Mouse ScrollWheel");
         Vector3 pos = transform.position;
-        pos.y -= scroll * 500 * scrollSpeed * Time.deltaTime;
+ 
+        pos.y -= scroll * 500 * scrollSpeed * Time.deltaTime * SettingsManager.scrollSensitivity;
         pos.y = Mathf.Clamp(pos.y, minY,maxY);
-        transform.position = pos;
+        targetPosition = pos;
+
+        //transform.position = pos;
 
 
     }

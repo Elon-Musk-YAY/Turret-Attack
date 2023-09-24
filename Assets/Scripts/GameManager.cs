@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -13,31 +14,40 @@ public class GameManager : MonoBehaviour
     public GameObject youWinUI;
     public GameObject winFireWorks;
     public GameObject christmasSnow;
+    public static float turretPriceIncrease = 1.22f;
+    public static int maxTurretPriceIncrease = 10000;
     public float sellMulti = 0.5f;
     public static float sellMult;
     public static bool win;
     public static bool winState;
     public static bool inTextBox;
+    public int maxTurretLevel = 60;
     public Skin[] turretSkins;
     public GameObject cheatsMenuText;
-    public static GameManager instance;
+    public static GameManager Instance;
+    public ExplodeEndBlock endExploder;
+    public GameObject absorbtionEffect;
+
+    public bool allSkinsForceUnlocked = false;
+
     public static string ShortenNum(float num)
     {
+        string output;
         if (num / 1_000_000_000 >= 1)
         {
-            string output = $"{num / 1_000_000_000:0.00}B";
+             output = $"{num / 1_000_000_000:0.00}B";
             output = output.Replace(".00", "");
             return output;
         }
         else if (num / 1000000 >= 1)
         {
-            string output = $"{num / 1000000:0.00}M";
-            output = output.Replace(".00","");
+             output = $"{num / 1000000:0.00}M";
+            output = output.Replace(".00", "");
             return output;
         }
         else if (num / 1000 >= 1)
         {
-            string output = $"{num / 1000:0.00}K";
+             output = $"{num / 1000:0.00}K";
             output = output.Replace(".00", "");
             return output;
         }
@@ -46,42 +56,45 @@ public class GameManager : MonoBehaviour
             return num.ToString();
         }
     }
+
+
     public static string ShortenNumL(long num)
     {
+        string output;
         if (num / 1_000_000_000_000_000_000 >= 1)
         {
-            string output = $"{num / 1_000_000_000_000_000_000d:0.00}QI";
+            output = $"{num / 1_000_000_000_000_000_000d:0.00}QI";
             output = output.Replace(".00", "");
             return output;
         }
         else if (num / 1_000_000_000_000_000 >= 1)
         {
-            string output = $"{num / 1_000_000_000_000_000d:0.00}QA";
+            output = $"{num / 1_000_000_000_000_000d:0.00}QA";
             output = output.Replace(".00", "");
             return output;
         }
         else if (num / 1_000_000_000_000 >= 1)
         {
-            string output = $"{num / 1_000_000_000_000d:0.00}T";
+            output = $"{num / 1_000_000_000_000d:0.00}T";
             output = output.Replace(".00", "");
             return output;
         }
         else if (num / 1_000_000_000 >= 1)
         {
-            string output = $"{num / 1_000_000_000d:0.00}B";
+            output = $"{num / 1_000_000_000d:0.00}B";
 
             output = output.Replace(".00", "");
             return output;
         }
         else if (num / 1_000_000 >= 1)
         {
-            string output = $"{num / 1_000_000d:0.00}M";
+            output = $"{num / 1_000_000d:0.00}M";
             output = output.Replace(".00", "");
             return output;
         }
         else if (num / 1_000 >= 1)
         {
-            string output = $"{num / 1_000d:0.00}K";
+            output = $"{num / 1_000d:0.00}K";
             output = output.Replace(".00", "");
             return output;
         }
@@ -90,44 +103,137 @@ public class GameManager : MonoBehaviour
             return num.ToString();
         }
     }
+
+    public static string ShortenNumUL(ulong num)
+    {
+        string output;
+        if (num / 1_000_000_000_000_000_000 >= 1)
+        {
+            output = $"{num / 1_000_000_000_000_000_000d:0.00}QI";
+            output = output.Replace(".00", "");
+            return output;
+        }
+        else if (num / 1_000_000_000_000_000 >= 1)
+        {
+            output = $"{num / 1_000_000_000_000_000d:0.00}QA";
+            output = output.Replace(".00", "");
+            return output;
+        }
+        else if (num / 1_000_000_000_000 >= 1)
+        {
+            output = $"{num / 1_000_000_000_000d:0.00}T";
+            output = output.Replace(".00", "");
+            return output;
+        }
+        else if (num / 1_000_000_000 >= 1)
+        {
+            output = $"{num / 1_000_000_000d:0.00}B";
+
+            output = output.Replace(".00", "");
+            return output;
+        }
+        else if (num / 1_000_000 >= 1)
+        {
+            output = $"{num / 1_000_000d:0.00}M";
+            output = output.Replace(".00", "");
+            return output;
+        }
+        else if (num / 1_000 >= 1)
+        {
+            output = $"{num / 1_000d:0.00}K";
+            output = output.Replace(".00", "");
+            return output;
+        }
+        else
+        {
+            return num.ToString();
+        }
+    }
+
+    //public static string ShortenNumBI(System.Numerics.BigInteger num)
+    //{
+    //    string output;
+    //    if ((decimal)num / (decimal)1_000_000_000_000_000_000 >= 1)
+    //    {
+    //         output = $"{(decimal)num / (decimal)1_000_000_000_000_000_000:0.00}QI";
+    //        output = output.Replace(".00", "");
+    //        return output;
+    //    }
+    //    else if ((decimal)num / (decimal)1_000_000_000_000_000 >= 1)
+    //    {
+    //         output = $"{(decimal)num / (decimal)1_000_000_000_000_000:0.00}QA";
+    //        output = output.Replace(".00", "");
+    //        return output;
+    //    }
+    //    else if ((decimal)num / (decimal)1_000_000_000_000 >= 1)
+    //    {
+    //         output = $"{(decimal)num / (decimal)1_000_000_000_000:0.00}T";
+    //        output = output.Replace(".00", "");
+    //        return output;
+    //    }
+    //    else if ((decimal)num / (decimal)1_000_000_000 >= 1)
+    //    {
+    //         output = $"{(decimal)num / (decimal)1_000_000_000:0.00}B";
+
+    //        output = output.Replace(".00", "");
+    //        return output;
+    //    }
+    //    else if ((decimal)num / (decimal)1_000_000 >= 1)
+    //    {
+    //         output = $"{(decimal)num / (decimal)1_000_000:0.00}M";
+    //        output = output.Replace(".00", "");
+    //        return output;
+    //    }
+    //    else if ((decimal)num / (decimal)1_000 >= 1)
+    //    {
+    //         output = $"{(decimal)num / (decimal)1_000:0.00}K";
+    //        output = output.Replace(".00", "");
+    //        return output;
+    //    }
+    //    else
+    //    {
+    //        return num.ToString();
+    //    }
+    //}
 
 
     public static string ShortenNumD(double num)
     {
+        string output;
         if (num / 1_000_000_000_000_000_000 >= 1)
         {
-            string output = $"{num / 1_000_000_000_000_000_000d:0.00}QI";
+            output = $"{num / 1_000_000_000_000_000_000d:0.00}QI";
             output = output.Replace(".00", "");
             return output;
         }
         else if (num / 1_000_000_000_000_000 >= 1)
         {
-            string output = $"{num / 1_000_000_000_000_000d:0.00}QA";
+            output = $"{num / 1_000_000_000_000_000d:0.00}QA";
             output = output.Replace(".00", "");
             return output;
         }
         else if (num / 1_000_000_000_000 >= 1)
         {
-            string output = $"{num / 1_000_000_000_000d:0.00}T";
+            output = $"{num / 1_000_000_000_000d:0.00}T";
             output = output.Replace(".00", "");
             return output;
         }
         else if (num / 1_000_000_000 >= 1)
         {
-            string output = $"{num / 1_000_000_000d:0.00}B";
+            output = $"{num / 1_000_000_000d:0.00}B";
 
             output = output.Replace(".00", "");
             return output;
         }
         else if (num / 1_000_000 >= 1)
         {
-            string output = $"{num / 1_000_000d:0.00}M";
+            output = $"{num / 1_000_000d:0.00}M";
             output = output.Replace(".00", "");
             return output;
         }
         else if (num / 1_000 >= 1)
         {
-            string output = $"{num / 1_000d:0.00}K";
+            output = $"{num / 1_000d:0.00}K";
             output = output.Replace(".00", "");
             return output;
         }
@@ -138,7 +244,7 @@ public class GameManager : MonoBehaviour
     }
     public Skin GetSkin(int skinID)
     {
-        for (int i =0; i< turretSkins.Length; i++)
+        for (int i = 0; i < turretSkins.Length; i++)
         {
             if (turretSkins[i].skinID == skinID)
             {
@@ -158,88 +264,101 @@ public class GameManager : MonoBehaviour
         PlayerStats.Money = save.Money;
         win = save.win;
         PlayerStats.Rounds = (int)Mathf.Clamp(save.Rounds, -1, Mathf.Infinity);
-        WaveSpawner.instance.enemySpeed = save.enemySpeed;
-        WaveSpawner.instance.enemyHealth = save.enemyHealth;
-        WaveSpawner.instance.waveIndex = save.enemiesPerRound;
-        WaveSpawner.instance.enemyWorth = save.enemyWorth;
-        WaveSpawner.instance.lastSkinAlert = save.lastSkinAlert;
+        WaveSpawner.Instance.enemySpeed = save.enemySpeed;
+        WaveSpawner.Instance.enemyHealth = save.enemyHealth;
+        WaveSpawner.Instance.waveIndex = save.enemiesPerRound;
+        WaveSpawner.Instance.enemyWorth = save.enemyWorth;
+        WaveSpawner.Instance.lastSkinAlert = save.lastSkinAlert;
         try
         {
-            WaveSpawner.instance.lastMultiplierIncrementWave = save.lastMulti;
+            WaveSpawner.Instance.lastMultiplierIncrementWave = save.lastMulti;
         }
         catch
         {
-            WaveSpawner.instance.lastMultiplierIncrementWave = (int)Mathf.Floor((WaveSpawner.instance.waveIndex / 2) / 5) * 5;
+            WaveSpawner.Instance.lastMultiplierIncrementWave = (int)Mathf.Floor((WaveSpawner.Instance.waveIndex / 2) / 5) * 5;
         }
         if (save.Lives <= 0)
         {
-            PlayerStats.Lives = PlayerStats.instance.startLives;
-            PlayerStats.Money = PlayerStats.instance.startMoney;
+            PlayerStats.Lives = PlayerStats.Instance.startLives;
+            PlayerStats.Money = PlayerStats.Instance.startMoney;
             PlayerStats.Rounds = 0;
             PlayerStats.turrets = new();
-            WaveSpawner.instance.waveIndex = 0;
-            WaveSpawner.instance.enemySpeed = 1;
-            WaveSpawner.instance.enemyHealth = 1;
-            WaveSpawner.instance.enemyWorth = 1;
-            WaveSpawner.instance.lastMultiplierIncrementWave = 0;
+            WaveSpawner.Instance.waveIndex = 0;
+            WaveSpawner.Instance.enemySpeed = 1;
+            WaveSpawner.Instance.enemyHealth = 1;
+            WaveSpawner.Instance.enemyWorth = 1;
+            WaveSpawner.Instance.lastMultiplierIncrementWave = 0;
         }
-        //WaveSpawner.instance.loadComplete = true;
+        //WaveSpawner.Instance.loadComplete = true;
         Debug.LogWarning("Data Load Ready and Done");
-        WaveSpawner.instance.ReadyGame();
+        if (!Instance.GetComponent<TutorialManager>().enabled || File.Exists(SaveSystem.path))
+        {
+            WaveSpawner.Instance.ReadyGame();
+        }
     }
 
     private void Awake()
     {
         nodes = setNodes;
         sellMult = sellMulti;
-        instance = this;
+        Instance = this;
     }
 
 
     public static void LoadTurret(TurretData data)
     {
 
-            Node node = nodes.transform.GetChild(data.nodeIndex).GetComponent<Node>();
-            GameObject prefab;
-            if (data.upgraded && data.skinID ==0)
+        Node node = nodes.transform.GetChild(data.nodeIndex).GetComponent<Node>();
+        GameObject prefab;
+        if (data.upgraded && data.skinID == 0)
+        {
+            prefab = Shop.Instance.GetBlueprintByID(data.prefabID).upgradedPrefab;
+        }
+        else if (data.skinID == 0)
+        {
+            prefab = Shop.Instance.GetBlueprintByID(data.prefabID).prefab;
+        }
+        else
+        {
+            Skin turretSkin = Instance.GetSkin(data.skinID);
+            if (data.isMissle)
             {
-                prefab = Shop.instance.GetBlueprintByID(data.prefabID).upgradedPrefab;
-            }
-            else if (data.skinID == 0)
-            {
-                prefab = Shop.instance.GetBlueprintByID(data.prefabID).prefab;
-            } else
-            {
-                Skin turretSkin = instance.GetSkin(data.skinID);
-                if (data.isMissle)
-                {
-                    if (!data.upgraded)
-                    {
-                        prefab = turretSkin.missleLauncherPrefab;
-                    } else
-                    {
-                        prefab = turretSkin.missleLauncherPrefabUpgraded;
-                    }
-                } else if (data.useLaser)
-                {
-                    if (!data.upgraded)
-                    {
-                        prefab = turretSkin.laserBeamerPrefab;
-                    } else
-                    {
-                        prefab = turretSkin.laserBeamerPrefabUpgraded;
-                    }
-                } else if (data.prefabID == 0)
-                {
                 if (!data.upgraded)
                 {
-                    prefab = turretSkin.standardTurretPrefab;
+                    prefab = turretSkin.missleLauncherPrefab;
                 }
                 else
                 {
-                    prefab = turretSkin.standardTurretPrefabUpgraded;
+                    prefab = turretSkin.missleLauncherPrefabUpgraded;
                 }
-            } else
+            }
+            else if (data.useLaser)
+            {
+                if (!data.upgraded)
+                {
+                    prefab = turretSkin.laserBeamerPrefab;
+                }
+                else
+                {
+                    prefab = turretSkin.laserBeamerPrefabUpgraded;
+                }
+            }
+            else if (data.hardcoreTower)
+            {
+                prefab = turretSkin.bufferPrefab;
+            }
+            else if (data.isSpiral)
+            {
+                if (!data.upgraded)
+                {
+                    prefab = turretSkin.spiralTurretPrefab;
+                }
+                else
+                {
+                    prefab = turretSkin.spiralTurretPrefabUpgraded;
+                }
+            }
+            else if (data.useForceField)
             {
                 if (!data.upgraded)
                 {
@@ -250,26 +369,44 @@ public class GameManager : MonoBehaviour
                     prefab = turretSkin.forceFieldLauncherPrefabUpgraded;
                 }
             }
-
+            else
+            {
+                if (!data.upgraded)
+                {
+                    prefab = turretSkin.standardTurretPrefab;
+                }
+                else
+                {
+                    prefab = turretSkin.standardTurretPrefabUpgraded;
+                }
             }
-            BuildManager.instance.SelectTurretToBuild(Shop.instance.GetBlueprintByID(data.prefabID));
-            GameObject gun;
+
+        }
+        BuildManager.Instance.SelectTurretToBuild(Shop.Instance.GetBlueprintByID(data.prefabID));
+        GameObject gun;
         if (data.useLaser && !data.upgraded)
         {
-            gun = (GameObject)Instantiate(prefab, new Vector3(node.GetBuildPostion().x, 0, node.GetBuildPostion().z), Quaternion.identity);
-        } else if (Shop.instance.GetBlueprintByID(data.prefabID).prefab.GetComponent<Turret>().useForceField)
+            gun = Instantiate(prefab, new Vector3(node.GetBuildPostion().x, 0, node.GetBuildPostion().z), Quaternion.identity);
+        }
+        else if (data.useForceField)
         {
-            gun = (GameObject)Instantiate(prefab, new Vector3(node.GetBuildPostion().x, 0.4f, node.GetBuildPostion().z), Quaternion.identity);
+            gun = Instantiate(prefab, new Vector3(node.GetBuildPostion().x, 0.4f, node.GetBuildPostion().z), Quaternion.identity);
+        }
+        else if (data.isSpiral)
+        {
+            gun = Instantiate(prefab, new Vector3(node.GetBuildPostion().x, 5.4f, node.GetBuildPostion().z), Quaternion.identity);
         }
         else
         {
-            gun = (GameObject)Instantiate(prefab, node.GetBuildPostion(isUpgradedLaser: data.upgraded && data.useLaser, isUpgradedMissle: data.upgraded && data.isMissle), Quaternion.identity);
+            gun = Instantiate(prefab, node.GetBuildPostion(isUpgradedLaser: data.upgraded && data.useLaser, isUpgradedMissle: data.upgraded && data.isMissle), Quaternion.identity);
         }
-            node.GetComponent<Node>().turret = gun;
-            node.GetComponent<Node>().turretBlueprint = Shop.instance.GetBlueprintByID(data.prefabID);
-            PlayerStats.turrets.Add(gun.GetComponent<Turret>());
-            InjectData(gun.GetComponent<Turret>(), data);
-            BuildManager.instance.ClearTurretToBuild();
+        Node n = node.GetComponent<Node>();
+        n.turret = gun;
+        n.turretBlueprint = Shop.Instance.GetBlueprintByID(data.prefabID);
+        Turret _t = gun.GetComponent<Turret>();
+        PlayerStats.turrets.Add(_t);
+        InjectData(_t, data);
+        BuildManager.Instance.ClearTurretToBuild();
     }
 
     public static void InjectData(Turret t, TurretData data)
@@ -288,6 +425,9 @@ public class GameManager : MonoBehaviour
         t.blueprintID = data.prefabID;
         t.sellPrice = data.sellPrice;
         t.turretSkinID = data.skinID;
+        t.ammoDmgMultiplier = data.ammoDmgMultiplier;
+        t.basedMultiplierFromPurchase = data.basedMultiplierFromPurchase;
+        t.maxBuffs = data.maxBuffs;
         try
         {
             t.upgradable = data.upgradable;
@@ -300,7 +440,8 @@ public class GameManager : MonoBehaviour
             t.blastRadius = data.blastRadius;
             t.useForceField = data.useForceField;
 
-        } catch (Exception e) 
+        }
+        catch (Exception e)
         {
             print(e.StackTrace);
         }
@@ -308,18 +449,23 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        Debug.LogError("halloween " + SeasonalEvents.HalloweenSeason + "    christmas: " + SeasonalEvents.ChristmasSeason);
-        if (SeasonalEvents.ChristmasSeason && GraphicsManager.particles) {
+        if (SeasonalEvents.ChristmasSeason && SettingsManager.All())
+        {
             christmasSnow.SetActive(true);
-        } else {
+        }
+        else
+        {
             christmasSnow.SetActive(false);
         }
     }
     void Update()
     {
-        if (win) {
+        if (win)
+        {
             winFireWorks.SetActive(true);
-        } else {
+        }
+        else
+        {
             winFireWorks.SetActive(false);
         }
         if (EventSystem.current.currentSelectedGameObject != null)
@@ -329,16 +475,17 @@ public class GameManager : MonoBehaviour
                 inTextBox = true;
             }
         }
-        else
+        else if (inTextBox)
         {
             inTextBox = false;
             gameCamera.GetComponent<CameraController>().enabled = true;
         }
 
-        if (WaveSpawner.instance.waveIndex/2 >= 250 && win)
+        if (WaveSpawner.Instance.waveIndex / 2 >= 250 && win)
         {
             cheatsMenuText.SetActive(true);
-        } else
+        }
+        else
         {
             cheatsMenuText.SetActive(false);
         }
@@ -352,7 +499,7 @@ public class GameManager : MonoBehaviour
     void EndGame()
     {
         WaveSpawner.enemiesAlive = 0;
-        WaveSpawner.instance.enabled = false;
+        WaveSpawner.Instance.enabled = false;
         gameOver = true;
         gameOverUI.SetActive(true);
     }
@@ -360,6 +507,7 @@ public class GameManager : MonoBehaviour
     {
         win = true;
         winState = true;
+        // TODO ui animation
         youWinUI.SetActive(true);
 
     }

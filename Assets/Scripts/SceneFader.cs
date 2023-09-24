@@ -16,6 +16,9 @@ public class SceneFader : MonoBehaviour
 
     public void FadeTo(string scene)
     {
+        if (img.color.a != 1.0f && img.color.a != 0.0f) {
+            return;
+        }
         StartCoroutine(FadeOut(scene));
     }
     public IEnumerator FadeIn()

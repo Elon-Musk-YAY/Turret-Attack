@@ -116,7 +116,7 @@ Material:
     - _Emission: {r: 0, g: 0, b: 23.968628, a: 0}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _Hologram_Texture_Tiling: {r: 1, g: 3, b: 0, a: 0}
-    - _Main_Color: {r: 0, g: 1, b: 0.9882353, a: 0}
+    - _Main_Color: {r: 1, g: 0, b: 0, a: 0}
     - _SpecColor: {r: 0.2, g: 0.2, b: 0.2, a: 1}
   m_BuildTextureStacks: []
 --- !u!114 &6483915071910547408

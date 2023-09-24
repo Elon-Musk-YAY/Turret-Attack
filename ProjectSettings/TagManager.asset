@@ -7,6 +7,9 @@ TagManager:
   - Enemy
   - Boundary
   - Set Money Text
+  - VFX
+  - Enemy Health Bar
+  - NO COLLIDE
   layers:
   - Default
   - TransparentFX

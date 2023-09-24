@@ -10,14 +10,15 @@ public class EventNodeUIToggle: MonoBehaviour
 
     private void Start()
     {
+        NodeUI nu = eventUI.GetComponent<NodeUI>();
         if (toggleEvent == EventTypes.Halloween && SeasonalEvents.HalloweenSeason) {
             mainUI.SetActive(false);
             eventUI.SetActive(true);
-            buildManager.nodeUI = eventUI.GetComponent<NodeUI>();
+            buildManager.nodeUI = nu;
 		} else if (toggleEvent == EventTypes.Christmas && SeasonalEvents.ChristmasSeason) {
             mainUI.SetActive(false);
             eventUI.SetActive(true);
-            buildManager.nodeUI = eventUI.GetComponent<NodeUI>();
+            buildManager.nodeUI = nu;
         }
     }
 }

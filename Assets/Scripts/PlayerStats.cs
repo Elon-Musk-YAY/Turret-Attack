@@ -3,33 +3,40 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using System.Runtime.InteropServices;
 
 public class PlayerStats : MonoBehaviour
 {
-
-    public static PlayerStats instance;
+#if UNITY_WEBGL && !UNITY_EDITOR
+        [DllImport("__Internal")]
+        private static extern void SyncDB();
+#endif
+    public static PlayerStats Instance;
 
     
     private void Awake()
     {
-        if (instance != null)
+        if (Instance != null)
         {
             Debug.LogError("More than 1 playersets in scene");
             return;
         }
-        instance = this;
-        string path = Path.Combine(Application.persistentDataPath, "save0");
-        if (!File.Exists(path))
+        Instance = this;
+        string path = SaveSystem.savePath;
+        if (!Directory.Exists(path))
         {
             Directory.CreateDirectory(path);
+#if UNITY_WEBGL && !UNITY_EDITOR
+        //flush our changes to IndexedDB
+        SyncDB();
+#endif
         }
-        InvokeRepeating(nameof(StartSave), 30f, 30f);
 
     }
     public static long Money;
-    public int startMoney = 400;
+    public int startMoney { get; set; } = 400;
     public static int Lives;
-    public int startLives = 20;
+    public int startLives { get; set; } = 1;
     public static int Rounds;
     public static List<Turret> turrets = new();
 
@@ -37,7 +44,6 @@ public class PlayerStats : MonoBehaviour
     public void PrepareSave()
     {
         SaveSystem.turrets = new();
-        Debug.Log(turrets.Count);
         for (int i = 0; i < turrets.Count; i++)
         {
             if (turrets[i] == null) continue;
@@ -49,13 +55,26 @@ public class PlayerStats : MonoBehaviour
     {
         print("Saving Data..." + gameObject.name);
         SaveSystem.SaveData();
+        StatsManager.SaveStats();
+        SettingsManager.SaveSettings();
+#if UNITY_WEBGL && !UNITY_EDITOR
+        //flush our changes to IndexedDB
+        SyncDB();
+#endif
     }
 
     private void OnApplicationQuit()
     {
-        if (SceneManager.GetActiveScene().name == "TowerDefenseMain") {
-        StartSave();
+        if (SceneManager.GetActiveScene().name == "TowerDefenseMain" || SceneManager.GetActiveScene().name == "TowerDefenseMainWEBGL") {
+            if (GameManager.gameOver)
+            {
+                Directory.Delete(SaveSystem.savePath,true);
+#if UNITY_WEBGL && !UNITY_EDITOR
+        //flush our changes to IndexedDB
+        SyncDB();
+#endif
 
+            }
         }
     }
     private void Start()
@@ -71,7 +90,7 @@ public class PlayerStats : MonoBehaviour
         Money = startMoney;
         Lives = startLives;
         Rounds = 0;
-        WaveSpawner.instance.waveIndex = 0;
-        WaveSpawner.instance.ReadyGame();
+        WaveSpawner.Instance.waveIndex = 0;
+        //WaveSpawner.Instance.ReadyGame();
     }
 }

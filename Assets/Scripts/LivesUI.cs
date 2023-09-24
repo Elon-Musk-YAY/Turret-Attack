@@ -16,7 +16,7 @@ public class LivesUI : MonoBehaviour
         {
             extension = " LIVES";
         }
-        livesText.text = $"{GameManager.ShortenNum(Mathf.Clamp(PlayerStats.Lives,0,Mathf.Infinity))}{extension}";
+        livesText.text = $"{Mathf.Clamp(PlayerStats.Lives,0,420)}{extension}";
     }
 
 }

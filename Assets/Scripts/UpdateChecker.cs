@@ -4,17 +4,18 @@ using UnityEngine.UI;
 public class UpdateChecker : MonoBehaviour
 {
     
-    public static string gameVersion = "1.5";
+    public static string gameVersion;
     public GameObject updateAvailableUI;
     public Text versionText;
-    public Text uiVersionText;
-    public static UpdateChecker instance;
+    public Text updateUiVersionText;
+    public static UpdateChecker Instance;
 
     public static string remoteVersion;
 
     private void Awake()
     {
-        instance = this;
+        gameVersion = Application.version;
+        Instance = this;
     }
 
     public void GoToDownloadPage() {
@@ -31,11 +32,11 @@ public class UpdateChecker : MonoBehaviour
 
     private void Start()
     {
-        uiVersionText.text = $"v{gameVersion} (c) Akshar Desai {System.DateTime.Now.Year}";
+        updateUiVersionText.text = $"v{gameVersion} (c) Akshar Desai {System.DateTime.Now.Year}";
     }
 
     public void CheckForUpdates(string remoteVersion) {
-        if (remoteVersion != gameVersion) {
+        if (remoteVersion != gameVersion && !Application.isEditor) {
             versionText.text = $"Turret Overload v{remoteVersion} is now available!";
             OpenUI();
         }

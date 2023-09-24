@@ -1,14 +1,17 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class GameWin : MonoBehaviour
 {
     // Start is called before the first frame update
     public SceneFader fader;
+    public Text timeText;
     public string menuSceneName = "TowerDefenseMenu";
-    void Start()
+    void OnEnable()
     {
-        
+        PlayerStats.Instance.StartSave();
+        timeText.text = $"Defeated the Spheroids in {StatsManager.GetFormattedPlayTime()}!";
     }
 
     // Update is called once per frame
@@ -19,8 +22,8 @@ public class GameWin : MonoBehaviour
 
     public void Menu()
     {
+        PlayerStats.Instance.StartSave();
         Time.timeScale = 1f;
-        PlayerStats.instance.StartSave();
         WaveSpawner.enemiesAlive = 0;
         foreach (Node node in GameManager.nodes.GetComponentsInChildren<Node>())
         {
@@ -31,26 +34,26 @@ public class GameWin : MonoBehaviour
 
     public void Continue()
     {
-        WaveSpawner.instance.enabled = true;
-        GameManager.instance.youWinUI.SetActive(false);
+        WaveSpawner.Instance.enabled = true;
+        GameManager.Instance.youWinUI.SetActive(false);
         GameManager.winState = false;
     }
 
     public void Retry()
     {
         PlayerStats.Rounds = 0;
-        PlayerStats.Lives = PlayerStats.instance.startLives;
-        PlayerStats.Money = PlayerStats.instance.startMoney;
+        PlayerStats.Lives = PlayerStats.Instance.startLives;
+        PlayerStats.Money = PlayerStats.Instance.startMoney;
         PlayerStats.turrets = new();
-        WaveSpawner.instance.waveIndex = 0;
-        WaveSpawner.instance.enemySpeed = 1;
-        WaveSpawner.instance.enemyHealth = 1;
+        WaveSpawner.Instance.waveIndex = 0;
+        WaveSpawner.Instance.enemySpeed = 1;
+        WaveSpawner.Instance.enemyHealth = 1;
         WaveSpawner.enemiesAlive = 0;
-        WaveSpawner.instance.enemyWorth = 1;
+        WaveSpawner.Instance.enemyWorth = 1;
         GameManager.gameOver = false;
-        WaveSpawner.instance.lastMultiplierIncrementWave = 0;
+        WaveSpawner.Instance.lastMultiplierIncrementWave = 0;
         WaveSpawner.enemiesAlive = -1;
-        PlayerStats.instance.StartSave();
+        PlayerStats.Instance.StartSave();
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         fader.FadeTo(SceneManager.GetActiveScene().name);
     }

@@ -9,6 +9,8 @@ public class TurretBlueprint
     public GameObject buildEffect;
     public GameObject upgradedPrefab;
     public int upgradeCost;
-    public int cost;
+    public long cost;
+    [HideInInspector]
+    public long baseCost;
     public int id = 0;
 }

@@ -7,13 +7,14 @@ public class EventLightToggle : MonoBehaviour
 
     private void Start()
     {
+        Light l = gameObject.GetComponent<Light>();
         if (toggleEvent == EventTypes.Halloween && SeasonalEvents.HalloweenSeason)
         {
-            gameObject.GetComponent<Light>().color = newGameObjectLight.color;
+            l.color = newGameObjectLight.color;
         }
         else if (toggleEvent == EventTypes.Christmas && SeasonalEvents.ChristmasSeason)
         {
-            gameObject.GetComponent<Light>().color = newGameObjectLight.color;
+            l.color = newGameObjectLight.color;
         }
     }
    

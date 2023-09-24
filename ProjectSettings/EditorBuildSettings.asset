@@ -6,9 +6,9 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/TowerDefenseMenu.unity
+    path: Assets/Scenes/WEBGL/TowerDefenseMenuWEBGL.unity
     guid: 38c5340dc28594d5fb215609dd0b1333
   - enabled: 1
-    path: Assets/Scenes/TowerDefenseMain.unity
-    guid: 0ed0cd67594134326bdfe1905a639e24
+    path: Assets/Scenes/WEBGL/TowerDefenseMainWEBGL.unity
+    guid: b25847e965a0d423e8a24722716b3924
   m_configObjects: {}

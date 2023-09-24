@@ -11,11 +11,11 @@ public class WaveUI : MonoBehaviour
     {
         if (WaveSpawner.enemiesAlive > 0 || GameManager.gameOver)
         {
-            waveText.text = "" + WaveSpawner.instance.waveIndex / 2;
+            waveText.text = "" + WaveSpawner.Instance.waveIndex / 2;
         }
         else
         {
-            waveText.text = "" + (WaveSpawner.instance.waveIndex+2) / 2;
+            waveText.text = "" + (WaveSpawner.Instance.waveIndex+2) / 2;
         }
 
     }

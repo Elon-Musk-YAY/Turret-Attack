@@ -118,7 +118,7 @@ ParticleSystem:
     startLifetime:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 3
+      scalar: 4
       minScalar: 1
       maxCurve:
         serializedVersion: 2
@@ -171,8 +171,8 @@ ParticleSystem:
     startSpeed:
       serializedVersion: 2
       minMaxState: 3
-      scalar: 15
-      minScalar: 5
+      scalar: 20
+      minScalar: 10
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -287,8 +287,8 @@ ParticleSystem:
     startSize:
       serializedVersion: 2
       minMaxState: 3
-      scalar: 0.5
-      minScalar: 0.25
+      scalar: 0.6
+      minScalar: 0.3
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -610,7 +610,7 @@ ParticleSystem:
     gravityModifier:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 1
+      scalar: 1.6
       minScalar: 0
       maxCurve:
         serializedVersion: 2
@@ -750,7 +750,7 @@ ParticleSystem:
     sphericalDirectionAmount: 0
     randomPositionAmount: 0
     radius:
-      value: 0.99
+      value: 6.35
       mode: 0
       spread: 0
       speed:
@@ -978,9 +978,9 @@ ParticleSystem:
       time: 0
       countCurve:
         serializedVersion: 2
-        minMaxState: 0
-        scalar: 50
-        minScalar: 5
+        minMaxState: 3
+        scalar: 25
+        minScalar: 20
         maxCurve:
           serializedVersion: 2
           m_Curve:
@@ -1052,8 +1052,17 @@ ParticleSystem:
           inWeight: 0.33333334
           outWeight: 0.33333334
         - serializedVersion: 3
-          time: 1
-          value: 0
+          time: 0.31403702
+          value: 1
+          inSlope: 0.021562109
+          outSlope: 0.021562109
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0.20210195
+          outWeight: 0.44271362
+        - serializedVersion: 3
+          time: 0.50764054
+          value: 0.009803921
           inSlope: -1.3638557
           outSlope: -1.3638557
           tangentMode: 0
@@ -3845,9 +3854,9 @@ ParticleSystem:
     radiusScale: 1
     collidesWith:
       serializedVersion: 2
-      m_Bits: 4294967295
+      m_Bits: 251
     maxCollisionShapes: 256
-    quality: 1
+    quality: 0
     voxelSize: 0.5
     collisionMessages: 0
     collidesWithDynamic: 1
@@ -5480,7 +5489,7 @@ ParticleSystem:
     gravityModifier:
       serializedVersion: 2
       minMaxState: 0
-      scalar: -1
+      scalar: -0.5
       minScalar: 0
       maxCurve:
         serializedVersion: 2
@@ -5620,7 +5629,7 @@ ParticleSystem:
     sphericalDirectionAmount: 0
     randomPositionAmount: 0
     radius:
-      value: 3.65
+      value: 6.1
       mode: 0
       spread: 0
       speed:
@@ -5849,7 +5858,7 @@ ParticleSystem:
       countCurve:
         serializedVersion: 2
         minMaxState: 0
-        scalar: 30
+        scalar: 100
         minScalar: 5
         maxCurve:
           serializedVersion: 2

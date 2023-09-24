@@ -1,20 +1,21 @@
 using System;
 using System.Collections;
 using UnityEngine;
-using static UnityEngine.EventSystems.EventTrigger;
-using UnityEngine.SocialPlatforms;
+using static UnityEngine.ParticleSystem;
 
 public class Bullet : MonoBehaviour
 {
-    private Transform target;
+    public Transform target;
     public GameObject impactEffect;
 
-    public float speed = 70f;
-    public float explosionRadius = 0;
-    private Turret turret;
-    public GameObject forceFieldPrefab;
-    private bool hasSpawnedForceField;
+    [SerializeField] private float speed = 70f;
+    [SerializeField] private float missleSpeedIncrease = 20;
+    [SerializeField] private float explosionRadius = 0;
+    private Turret parentTurret;
+    [SerializeField] private GameObject auraPrefab;
+    private bool hasSpawnedAura;
     private bool hasUsedEffect = false;
+    private Vector3 bulletStartPosition;
 
 
     public long damage = 50;
@@ -27,64 +28,139 @@ public class Bullet : MonoBehaviour
 
     public void setParent(Turret t)
     {
-        turret = t;
+        parentTurret = t;
+    }
+
+    IEnumerator DestroyAfter()
+    {
+        yield return new WaitForSeconds(3f);
+        if (!target)
+        {
+            Destroy(gameObject);
+        }
+    }
+
+    Vector3 zeroVector = new Vector3(0f, 0f, 0f);
+
+    Vector3 GetNormalized(float magnitude, Vector3 dir)
+    {
+        if (magnitude > 1E-05f)
+        {
+            return dir / magnitude;
+        }
+        return zeroVector;
     }
 
 
+
+    private void Start()
+    {
+        if (parentTurret.isSpiral)
+        {
+            StartCoroutine(DestroyAfter());
+            bulletStartPosition = transform.position;
+        }
+        _t = transform;
+    }
+
+    private Transform _t;
+
+    private Vector3 dir;
     // Update is called once per frame
     void Update()
     {
-        if (target == null)
+        if (Time.timeScale == 0f) return;
+        if (parentTurret.isMissle && SettingsManager.particles == ParticleSettingTypes.OFF)
         {
-            if (!hasSpawnedForceField)
+            _t.GetChild(1).gameObject.SetActive(false);
+        }
+        else if (parentTurret.isMissle && SettingsManager.particles != ParticleSettingTypes.OFF)
+        {
+            _t.GetChild(1).gameObject.SetActive(true);
+        }
+        if (target == null && !parentTurret.isSpiral)
+        {
+            if (!hasSpawnedAura)
             {
-                GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
                 float shortestDistance = Mathf.Infinity;
                 GameObject nearestEnemy = null;
-                foreach (GameObject enemy in enemies)
+                for (int i = 0; i < WaveSpawner.Instance.currentEnemies.Count; i++)
                 {
-                    float distanceToEnemy = Vector3.Distance(transform.position, enemy.transform.position);
-                    if (distanceToEnemy < shortestDistance && enemy.GetComponent<Enemy>().Protected == false)
+                    if (WaveSpawner.Instance.currentEnemies[i] == null) continue;
+                    float distanceToEnemy = Vector3.Distance(_t.position, WaveSpawner.Instance.currentEnemies[i].transform.position);
+                    if (distanceToEnemy < shortestDistance && WaveSpawner.Instance.currentEnemies[i].Protected == false)
                     {
                         shortestDistance = distanceToEnemy;
-                        nearestEnemy = enemy;
+                        nearestEnemy = WaveSpawner.Instance.currentEnemies[i].gameObject;
                     }
                 }
-                if (nearestEnemy != null && shortestDistance <= turret.range && !turret.hardcoreTower)
+                if (nearestEnemy != null && shortestDistance <= parentTurret.range && !parentTurret.hardcoreTower)
                 {
                     target = nearestEnemy.transform;
-                    Seek(nearestEnemy.transform);
+                    Seek(target);
                 }
                 else
                 {
                     Destroy(gameObject);
-                    turret.fireCountdown = (1f / turret.fireRate) / 2;
+                    parentTurret.fireCountdown = (1f / parentTurret.fireRate) / 2;
                 }
             }
             return;
         }
 
-        Vector3 dir = target.position - transform.position;
-        float distanceThisFrame = speed * Time.deltaTime;
-
-        if (dir.magnitude <= distanceThisFrame)
+        if (parentTurret.isSpiral && target == null)
         {
-            HitTarget();
-            return;
+            Vector3 droppedVector = new Vector3(bulletStartPosition.x, bulletStartPosition.y - parentTurret.spiralLower, bulletStartPosition.z);
+            if (Physics.Raycast(droppedVector, new Vector3(-(_t.rotation * droppedVector).x, 0f, -(_t.rotation * droppedVector).z) * 40, out RaycastHit newEnemy))
+            {
+                Enemy f = (Enemy)newEnemy.collider.GetComponent("Enemy");
+                if (f)
+                {
+                    if (!((f.isMegaBoss || f.isFINALBOSS) && f.healthBar == null))
+                    {
+                        Seek(newEnemy.transform);
+                    }
+                }
+            }
+            _t.Translate(speed * Time.deltaTime * new Vector3(-(_t.rotation * bulletStartPosition).x, 0f, -(_t.rotation * bulletStartPosition).z).normalized, Space.World);
+        }
+        if (target)
+        {
+
+            if (target.gameObject.name == null && !parentTurret.useForceField)
+            {
+                Destroy(gameObject);
+                return;
+            }
+
+            dir = target.position - _t.position;
+            speed += missleSpeedIncrease * Time.deltaTime * 0.5f;
+            float distanceThisFrame = speed * Time.deltaTime;
+            float sqrMag = dir.sqrMagnitude;
+            if (sqrMag <= distanceThisFrame * distanceThisFrame)
+            {
+                HitTarget();
+                return;
+            }
+
+
+
+            _t.Translate(distanceThisFrame * GetNormalized(Mathf.Sqrt(sqrMag), dir), Space.World);
+            speed += missleSpeedIncrease * Time.deltaTime * 0.5f;
+            _t.LookAt(target);
         }
 
-        transform.Translate(dir.normalized * distanceThisFrame, Space.World);
-        transform.LookAt(target);
-        
+
+
     }
 
     void HitTarget()
     {
         if (hasUsedEffect) return;
-        if (GraphicsManager.particles)
+        if (SettingsManager.All())
         {
             GameObject effectIns = (GameObject)Instantiate(impactEffect, transform.position, transform.rotation);
-            Destroy(effectIns, 2f);
+            Destroy(effectIns, impactEffect.GetComponent<ParticleSystem>().main.startLifetime.constant + 2);
         }
         hasUsedEffect = true;
 
@@ -93,115 +169,95 @@ public class Bullet : MonoBehaviour
             Explode();
             Destroy(gameObject);
 
-        } else if (!forceFieldPrefab)
+        }
+        else if (!auraPrefab)
         {
             Damage(target, damage);
             Destroy(gameObject);
-        } else if (!hasSpawnedForceField && !target.GetComponent<Enemy>().isFINALBOSS)
-        {
-            StartCoroutine(CreateForceField());
-            hasSpawnedForceField = true;
-            transform.localScale = new Vector3(0, 0, 0);
-            transform.position = new Vector3(0,-100,0);
         }
-        
+        else if (!hasSpawnedAura && parentTurret.activeForceFields < 3)
+        {
+            Damage(target, damage);
+            StartCoroutine(CreateAura());
+            parentTurret.activeForceFields++;
+            hasSpawnedAura = true;
+            _t.localScale = new Vector3(0, 0, 0);
+            _t.position = new Vector3(0, -100, 0);
+        }
+        else if (!hasSpawnedAura)
+        {
+            Destroy(gameObject);
+        }
+
     }
 
 
 
-    IEnumerator CreateForceField()
+    IEnumerator CreateAura()
     {
-        AnimationClip clip = new();
-        clip.legacy = true;
-        GameObject forceField = Instantiate(forceFieldPrefab, transform.position, transform.rotation);
-        float endTime = turret.animationSpeed;
-        Keyframe[] keyX = new Keyframe[2];
-        keyX[0] = new Keyframe(0f, 0f);
-        keyX[1] = new Keyframe(endTime, turret.blastRadius);
+        GameObject aura = Instantiate(auraPrefab, new Vector3(_t.position.x, 0.5f, _t.position.z), Quaternion.identity);
+        ParticleSystem ps = aura.GetComponent<ParticleSystem>();
+        ps.Stop();
+        ps.Clear();
+        MainModule main = ps.main;
+        main.startLifetime = parentTurret.forceFieldLife;
+        main.startSize = parentTurret.blastRadius;
+        if (SettingsManager.All())
+        {
+            ParticleSystem secondaryPs = aura.transform.GetChild(0).GetComponent<ParticleSystem>();
+            secondaryPs.Stop();
+            secondaryPs.Clear();
+            MainModule secondaryMain = secondaryPs.main;
+            secondaryMain.duration = parentTurret.forceFieldLife - 1;
+            ShapeModule secondaryShape = secondaryPs.shape;
+            secondaryShape.radius = 0.5f * parentTurret.blastRadius;
+            secondaryPs.Play();
+        }
+        else
+        {
+            aura.transform.GetChild(0).gameObject.SetActive(false);
+        }
+        ps.Play();
 
-        Keyframe[] keyY = new Keyframe[2];
-        keyY[0] = new Keyframe(0f, 0f);
-        keyY[1] = new Keyframe(endTime, turret.blastRadius);
-
-        Keyframe[] keyZ = new Keyframe[2];
-        keyZ[0] = new Keyframe(0f, 0f);
-        keyZ[1] = new Keyframe(endTime, turret.blastRadius);
-        AnimationCurve curveX = new(keyX);
-        AnimationCurve curveY = new(keyY);
-        AnimationCurve curveZ = new(keyZ);
-        clip.SetCurve("", typeof(Transform), "localScale.x", curveX);
-        clip.SetCurve("", typeof(Transform), "localScale.y", curveY);
-        clip.SetCurve("", typeof(Transform), "localScale.z", curveZ);
-        Animation anim = forceField.GetComponent<Animation>();
-        clip.name = "Expand";
-        anim.AddClip(clip, clip.name);
-        anim.Play(clip.name);
-
-        yield return new WaitForSeconds(endTime);
-        yield return ForceFieldDamage(forceField);
+        yield return new WaitForSeconds(1);
+        yield return AuraDamage(aura);
 
     }
-
-    IEnumerator ForceFieldDamage(GameObject forceField)
+    Collider[] detectedEnemies;
+    IEnumerator AuraDamage(GameObject auraField)
     {
         float timeElapsed = 0f;
-        while (timeElapsed <= turret.forceFieldLife) {
+        while (timeElapsed <= parentTurret.forceFieldLife)
+        {
             timeElapsed += Time.deltaTime;
-            Collider[] colliders = Physics.OverlapSphere(forceField.transform.position, turret.blastRadius/2);
-            foreach (Collider collider in colliders)
+
+            detectedEnemies = Physics.OverlapSphere(auraField.transform.position, parentTurret.blastRadius / 2);
+            for (int i = 0; i < detectedEnemies.Length; i++)
             {
-                if (collider.tag == "Enemy")
+
+                if (detectedEnemies[i].CompareTag("Enemy"))
                 {
-                    Damage(collider.transform, Mathf.RoundToInt(turret.damagePerSecond*Time.deltaTime));
-                    collider.gameObject.GetComponent<Enemy>().Slow(turret.slowPercentForceField);
+
+                    Damage(detectedEnemies[i].transform, (long)Math.Round((double)(parentTurret.damagePerSecond * Time.deltaTime)));
+                    detectedEnemies[i].GetComponent<Enemy>().Slow(parentTurret.slowPercentForceField);
                 }
             }
             yield return new WaitForEndOfFrame();
         }
-
-        AnimationClip clip = new();
-        clip.legacy = true;
-        float endTime = turret.animationSpeed;
-        Keyframe[] keyX = new Keyframe[2];
-        keyX[0] = new Keyframe(0f, turret.blastRadius);
-        keyX[1] = new Keyframe(endTime, 0f);
-
-        Keyframe[] keyY = new Keyframe[2];
-        keyY[0] = new Keyframe(0f, turret.blastRadius);
-        keyY[1] = new Keyframe(endTime, 0f);
-
-        Keyframe[] keyZ = new Keyframe[2];
-        keyZ[0] = new Keyframe(0f, turret.blastRadius);
-        keyZ[1] = new Keyframe(endTime, 0f);
-        AnimationCurve curveX = new(keyX);
-        AnimationCurve curveY = new(keyY);
-        AnimationCurve curveZ = new(keyZ);
-        clip.SetCurve("", typeof(Transform), "localScale.x", curveX);
-        clip.SetCurve("", typeof(Transform), "localScale.y", curveY);
-        clip.SetCurve("", typeof(Transform), "localScale.z", curveZ);
-        Animation anim = forceField.GetComponent<Animation>();
-        clip.name = "Destroy";
-        anim.AddClip(clip, clip.name);
-        anim.Play(clip.name);
-
-        yield return new WaitForSeconds(endTime);
-
-
-
-        Destroy(forceField);
+        Destroy(auraField);
+        parentTurret.activeForceFields--;
         Destroy(gameObject);
     }
 
 
-
     void Explode()
     {
-        Collider[] colliders = Physics.OverlapSphere(transform.position, explosionRadius);
-        foreach (Collider collider in colliders)
+        Collider[] missleColliders = Physics.OverlapSphere(transform.position, explosionRadius);
+        for (int i = 0; i < missleColliders.Length; i++)
         {
-            if (collider.tag == "Enemy")
+            if (missleColliders[i].CompareTag("Enemy"))
             {
-                Damage(collider.transform, damage);
+                Damage(missleColliders[i].transform, damage);
             }
         }
     }
@@ -212,8 +268,17 @@ public class Bullet : MonoBehaviour
         Enemy e = enemy.GetComponent<Enemy>();
         if (e != null)
         {
-            e.TakeDamage(damage);
+            e.TakeDamage(damage, parentTurret.enemySpecialty);
         }
 
+    }
+
+    private void OnDestroy()
+    {
+        Renderer r = GetComponent<Renderer>();
+        if (r)
+        {
+            Destroy(r.material);
+        }
     }
 }

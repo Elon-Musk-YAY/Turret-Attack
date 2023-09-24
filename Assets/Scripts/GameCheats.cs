@@ -9,7 +9,8 @@ public class GameCheats : MonoBehaviour
     public InputField moneyInputField;
     public GameObject cheatsUI;
 
-    private string RemoveBadChars(string p) {
+    private string RemoveBadChars(string p)
+    {
         List<string> badChars = new List<string>
         {
             "k","m","b","t","qa","qi"
@@ -17,7 +18,8 @@ public class GameCheats : MonoBehaviour
         ;
         string n = p;
         n = n.ToLower();
-        foreach(string badChar in badChars) {
+        foreach (string badChar in badChars)
+        {
             n = n.Replace(badChar, "");
         }
         return n;
@@ -36,13 +38,19 @@ public class GameCheats : MonoBehaviour
         }
         ;
 
-        
+
         string suffix = num.ToLower()[num.Length - 1].ToString();
-        string suffix2char = num.ToLower()[num.Length - 2].ToString() + num.ToLower()[num.Length-1].ToString();
-        if (suffix != "") {
-            long multiplyVal = multiplyValues[suffix];
-            if (!multiplyValues.ContainsKey(suffix) && multiplyValues[suffix2char] > 0) {
+        string suffix2char = num.ToLower()[num.Length - 2].ToString() + num.ToLower()[num.Length - 1].ToString();
+        if (suffix != "")
+        {
+            long multiplyVal;
+            if (!multiplyValues.ContainsKey(suffix) && multiplyValues[suffix2char] > 0)
+            {
                 multiplyVal = multiplyValues[suffix2char];
+            }
+            else
+            {
+                multiplyVal = multiplyValues[suffix];
             }
             num = RemoveBadChars(num);
             newVal = double.Parse(num);
@@ -75,13 +83,14 @@ public class GameCheats : MonoBehaviour
     public void Minus5Lives()
     {
         PlayerStats.Lives -= 5;
-        PlayerStats.Lives = (int)Mathf.Clamp(PlayerStats.Lives, 1, Mathf.Infinity);
+        PlayerStats.Lives = (int)Mathf.Clamp(PlayerStats.Lives, 1, 420);
     }
     public void Minus1Lives()
     {
         PlayerStats.Lives -= 1;
-        PlayerStats.Lives = (int)Mathf.Clamp(PlayerStats.Lives, 1, Mathf.Infinity);
+        PlayerStats.Lives = (int)Mathf.Clamp(PlayerStats.Lives, 1, 420);
     }
+
     public void SetMoney()
     {
         try
@@ -98,6 +107,10 @@ public class GameCheats : MonoBehaviour
             moneyInputField.text = "BAD INPUT";
         }
         catch (OverflowException)
+        {
+            moneyInputField.text = "BAD INPUT";
+        }
+        catch (KeyNotFoundException)
         {
             moneyInputField.text = "BAD INPUT";
         }

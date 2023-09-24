@@ -4,10 +4,10 @@ using System.Collections.Generic;
 
 public class SeasonalEventsManager: MonoBehaviour
 {
-    public static SeasonalEventsManager instance;
+    public static SeasonalEventsManager Instance;
     private void Awake()
     {
-        instance = this;
+        Instance = this;
     }
     public void SetSeasonalEvents(bool halloween, bool christmas) {
         Debug.LogWarning($"Values recieved: {halloween} and {christmas}");

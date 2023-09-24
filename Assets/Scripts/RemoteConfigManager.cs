@@ -32,20 +32,27 @@ public class RemoteConfigManager : MonoBehaviour
     {
         // initialize Unity's authentication and core services, however check for internet connection
         // in order to fail gracefully without throwing exception if connection does not exist
-        if (Utilities.CheckForInternetConnection())
+        try
         {
-            await InitializeRemoteConfigAsync();
+            if (Utilities.CheckForInternetConnection())
+            {
+                await InitializeRemoteConfigAsync();
+            }
+            RemoteConfigService.Instance.FetchCompleted += ApplyRemoteSettings;
+            RemoteConfigService.Instance.FetchConfigs(new userAttributes(), new appAttributes());
         }
-        RemoteConfigService.Instance.FetchCompleted += ApplyRemoteSettings;
-        RemoteConfigService.Instance.FetchConfigs(new userAttributes(), new appAttributes());
+        catch (System.Exception e)
+        {
+            Debug.LogWarning(e);
+        }
     }
 
     void ApplyRemoteSettings(ConfigResponse configResponse)
     {
         if (SceneManager.GetActiveScene().name == "TowerDefenseMenu" && configResponse.requestOrigin == ConfigOrigin.Remote)
         {
-            UpdateChecker.instance.CheckForUpdates(RemoteConfigService.Instance.appConfig.GetString("remoteVersion"));
-            SeasonalEventsManager.instance.SetSeasonalEvents(RemoteConfigService.Instance.appConfig.GetBool("halloweenSeason"), RemoteConfigService.Instance.appConfig.GetBool("christmasSeason"));
+            UpdateChecker.Instance.CheckForUpdates(RemoteConfigService.Instance.appConfig.GetString("remoteVersion"));
+            //SeasonalEventsManager.Instance.SetSeasonalEvents(RemoteConfigService.Instance.appConfig.GetBool("halloweenSeason"), RemoteConfigService.Instance.appConfig.GetBool("christmasSeason"));
         }
     }
 }

@@ -196,40 +196,53 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ed8c98c8db79a4f34b23227778d72dd3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  target: {fileID: 0}
+  showDebugLines: 0
+  enemySpecialty: 3
   upgradeCost: 0
   upgraded: 0
-  range: 40
+  range: 30
+  enemy: {fileID: 0}
   blueprintID: 0
   upgrades: 0
   sellPrice: 0
   upgradable: 1
   ammoDmgMultiplier: 1
+  basedMultiplierFromPurchase: 1
   turretSkinID: 0
   isMissle: 0
+  isSpiral: 0
   fireRate: 0.04444444
   fireCountdown: 0
-  bulletPrefab: {fileID: 3632707236548618267, guid: 50256dc8722f54e52a7392129465f9ec, type: 3}
+  bulletPrefab: {fileID: 3632707236548618267, guid: 16c6b4d7c0741435b88b1ff16be89b97, type: 3}
   index: 0
   useLaser: 0
   slowPercent: 0.5
   damageOverTime: 30
   lineRenderer: {fileID: 0}
   impactEffect: {fileID: 0}
+  impactEffectTransform: {fileID: 0}
   impactLight: {fileID: 0}
   useForceField: 1
   blastRadius: 25
   animationSpeed: 4
   forceFieldLife: 50
   damagePerSecond: 160
-  slowPercentForce: 0.8
+  slowPercentForceField: 0.5
+  activeForceFields: 0
   hardcoreTower: 0
   laser: {fileID: 0}
   sellMulti: 3
   healthMulti: 2
+  speedMulti: 1.1
+  maxBuffs: 10
+  spiralLower: 5
+  maxFirerate: 150
   enemyTag: Enemy
   partToRotate: {fileID: 9070477370001401067}
   turnSpeed: 10
   firePoint: {fileID: 6550387397193450863}
+  _t: {fileID: 0}
 --- !u!95 &2125832878718091690
 Animator:
   serializedVersion: 4

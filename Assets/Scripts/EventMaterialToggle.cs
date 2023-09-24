@@ -9,14 +9,21 @@ public class EventMaterialToggle: MonoBehaviour
 
     private void Start()
     {
+        Node n = gameObject.GetComponent<Node>();
+        Renderer r = gameObject.GetComponent<Renderer>();
         if (toggleEvent == EventTypes.Halloween && SeasonalEvents.HalloweenSeason) {
-			gameObject.GetComponent<Renderer>().material = newGameObjectMaterial;
+			r.sharedMaterial = newGameObjectMaterial;
             if (isNode) {
-                gameObject.GetComponent<Node>().startColor = newGameObjectMaterial.color;
-                gameObject.GetComponent<Node>().startEmission = newGameObjectMaterial.GetColor("_EmissionColor");
+                n.startColor = newGameObjectMaterial.color;
+                n.startEmission = newGameObjectMaterial.GetColor("_EmissionColor");
             }
 		} else if (toggleEvent == EventTypes.Christmas && SeasonalEvents.ChristmasSeason) {
-            gameObject.GetComponent<Renderer>().material = newGameObjectMaterial;
+            r.sharedMaterial = newGameObjectMaterial;
+            if (isNode)
+            {
+                n.startColor = newGameObjectMaterial.color;
+                n.startEmission = newGameObjectMaterial.GetColor("_EmissionColor");
+            }
         }
     }
 }

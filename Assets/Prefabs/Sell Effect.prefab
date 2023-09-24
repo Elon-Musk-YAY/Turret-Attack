@@ -5756,7 +5756,7 @@ ParticleSystem:
     sphericalDirectionAmount: 0
     randomPositionAmount: 0
     radius:
-      value: 1
+      value: 2.37
       mode: 0
       spread: 0
       speed:
@@ -5985,8 +5985,8 @@ ParticleSystem:
       countCurve:
         serializedVersion: 2
         minMaxState: 3
-        scalar: 30
-        minScalar: 10
+        scalar: 200
+        minScalar: 150
         maxCurve:
           serializedVersion: 2
           m_Curve:
@@ -8851,7 +8851,7 @@ ParticleSystem:
     radiusScale: 1
     collidesWith:
       serializedVersion: 2
-      m_Bits: 4294967295
+      m_Bits: 251
     maxCollisionShapes: 256
     quality: 1
     voxelSize: 0.5
